@@ -2,9 +2,9 @@ import z from "zod";
 import { NSError } from "./error";
 import { executeNS } from "./execute";
 import { functionRegistry } from "./functions";
+import { isSchemaSubset } from "./is-schema-subset";
 import { createComplexNodeParser, createSimpleNodeParser } from "./nodes.util";
 import { type NSDiagnostic, scanNS } from "./scan";
-import { isSchemaSubset } from "./subset";
 import { areSelfSubset } from "./subset.util";
 
 // --

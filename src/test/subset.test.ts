@@ -1,5 +1,5 @@
 import z, { type ZodType } from "zod";
-import { isSchemaSubset } from "@/ns/subset";
+import { isSchemaSubset } from "@/ns/is-schema-subset";
 import { $group } from "./util";
 
 type CompareTestCase = [expected: boolean, mainSchema: ZodType, inputSchema: ZodType];

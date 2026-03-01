@@ -26,10 +26,8 @@ import {
  * areCompatible(z.literal("ok"),z.string()) // false (because not all strings are "ok")
  */
 export function isSchemaSubset(mainSchema: ZodType, inputSchema: ZodType): boolean {
-	// TODO: use ZodType not $ZodType
-
 	if (isWhateverSchema(mainSchema)) return true; // any accepts everything
-	if (isWhateverSchema(inputSchema)) return false; // anything is not a subset of anything (except any, but we already checked that)
+	if (isWhateverSchema(inputSchema)) return false; // anything is NOT a subset of another schema (except the same schema any but we already checked that)
 
 	if (isUnionSchema(mainSchema)) {
 		const mainSchemas = getUnionSchemas(mainSchema);

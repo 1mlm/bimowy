@@ -8,7 +8,7 @@ import {
 	type ZodUnion,
 	type ZodUnknown
 } from "zod";
-import { isSchemaSubset } from "./subset";
+import { isSchemaSubset } from "./is-schema-subset";
 
 function isSchema(schema: unknown): schema is ZodType {
 	return (
