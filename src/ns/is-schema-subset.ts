@@ -7,6 +7,7 @@ import {
 	isBooleanSchema,
 	isIntersectionSchema,
 	isLiteralSchema,
+	isNeverSchema,
 	isNumberLiteralSchema,
 	isNumberSchema,
 	isStringLiteralSchema,
@@ -26,8 +27,10 @@ import {
  * areCompatible(z.literal("ok"),z.string()) // false (because not all strings are "ok")
  */
 export function isSchemaSubset(mainSchema: ZodType, inputSchema: ZodType): boolean {
-	if (isWhateverSchema(mainSchema)) return true; // any accepts everything
-	if (isWhateverSchema(inputSchema)) return false; // anything is NOT a subset of another schema (except the same schema any but we already checked that)
+	if (isNeverSchema(mainSchema)) return true;
+	if (isNeverSchema(inputSchema)) return false;
+	if (isWhateverSchema(mainSchema)) return true;
+	if (isWhateverSchema(inputSchema)) return false;
 
 	if (isUnionSchema(mainSchema)) {
 		const mainSchemas = getUnionSchemas(mainSchema);

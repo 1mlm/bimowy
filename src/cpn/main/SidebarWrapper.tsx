@@ -43,8 +43,8 @@ export const data: SidebarData = {
 	main: {
 		href: "/",
 		icon: MascotIcon,
-		subtitle: "BETA",
-		title: "Bimowy"
+		title: "Hub41",
+		subtitle: "Learning but fun ig"
 	},
 	nav: [
 		{
@@ -93,14 +93,14 @@ function Header() {
 			<SidebarMenu>
 				<SidebarMenuItem>
 					<SidebarMenuButton asChild size="lg">
-						<a href={data.main.href}>
-							<div className="aspect-square h-full p-0.5">
+						<a href={data.main.href} className="flex gap-3">
+							<div className="aspect-square h-full">
 								<data.main.icon className="hover:scale-125 hover:rotate-5 duration-150" />
 							</div>
 							<div className="flex flex-col leading-none">
 								<span className="font-medium text-xl">{data.main.title}</span>
 								{data.main.subtitle && (
-									<span className="text-md opacity-50 text-nowrap">{data.main.subtitle}</span>
+									<span className="text-md opacity-50">{data.main.subtitle}</span>
 								)}
 							</div>
 						</a>

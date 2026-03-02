@@ -67,3 +67,7 @@ export function areSelfSubset(schema1: ZodType, schema2: ZodType) {
 export function isWhateverSchema(schema: unknown): schema is ZodAny | ZodUnknown {
 	return isSchema(schema) && (schema.type === "any" || schema.type === "unknown");
 }
+
+export function isNeverSchema(schema: unknown): schema is z.ZodNever {
+	return isSchema(schema) && schema.type === "never";
+}

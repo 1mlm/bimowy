@@ -5,7 +5,7 @@ import { functionRegistry } from "./functions";
 import { isSchemaSubset } from "./is-schema-subset";
 import { createComplexNodeParser, createSimpleNodeParser } from "./nodes.util";
 import { type NSDiagnostic, scanNS } from "./scan";
-import { areSelfSubset } from "./subset.util";
+import { simplifySchema } from "./simplify-schema";
 
 // --
 
@@ -66,27 +66,13 @@ export const NSIfNodeData = createComplexNodeParser({
 	// ],
 	execute: (node, ctx) =>
 		executeNS(node.if, ctx) ? executeNS(node.yes, ctx) : executeNS(node.no, ctx),
-	scan(node, ctx) {
-		// should use .xor() ?
+	scan: (node, ctx) => {
 		const scannedIf = scanNS(node.if, ctx);
 		const parsedIf = isSchemaSubset(z.boolean(), scannedIf.schema);
-		if (!parsedIf)
-			return {
-				schema: z.never(),
-				notes: [
-					{
-						level: "error",
-						code: "IF_NOT_BOOLEAN",
-						message: "If node condition does not execute to a boolean",
-						extra: node
-					}
-				]
-			};
+		if (!parsedIf) throw new NSError("If node condition does not parse to a boolean", node);
 		const scannedYes = scanNS(node.yes, ctx);
 		const scannedNo = scanNS(node.no, ctx);
-		const NoAndYesSchema = areSelfSubset(scannedYes.schema, scannedNo.schema) // Simplification when possible.
-			? scannedYes.schema
-			: z.intersection(scannedYes.schema, scannedNo.schema);
+		const NoAndYesSchema = simplifySchema(z.intersection(scannedYes.schema, scannedNo.schema));
 		return {
 			schema: NoAndYesSchema,
 			notes: [...scannedIf.notes, ...scannedYes.notes, ...scannedNo.notes]
@@ -110,6 +96,7 @@ export const NSVarSetNodeData = createComplexNodeParser({
 	nstype: "var-set",
 	props: ["id", "value"],
 	execute: (node, ctx) => ctx.setVar(executeNS(node.id, ctx) as string, executeNS(node.value, ctx))
+	// scan(node, ctx) {	},
 });
 export type NSVarSetNode = z.infer<typeof NSVarSetNodeData.schema>;
 
