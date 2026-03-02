@@ -13,7 +13,7 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
-		"includes": ["**", "!node_modules", "!.next", "!dist", "!build", "src/playground/"]
+		"includes": ["**", "!node_modules", "!.next", "!dist", "!build", "src/playground/", "!src/css"]
 	},
 	"formatter": {
 		"enabled": true,
