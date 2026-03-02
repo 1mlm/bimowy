@@ -11,6 +11,7 @@ export function MascotIcon(props?: SVGProps<SVGSVGElement>) {
 			{...props}
 			className="group/icon hover:scale-110 hover:rotate-3 duration-100 **:duration-100"
 		>
+			<title>Mascot Icon</title>
 			<defs>
 				<linearGradient id="a">
 					<title>{"Logo gradient"}</title>
