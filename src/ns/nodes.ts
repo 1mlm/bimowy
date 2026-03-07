@@ -1,185 +1,28 @@
 import z from "zod";
-import { basicFunctionRegistry } from "./basic-functions";
-import { NSError } from "./error";
-import { executeNS } from "./execute";
-import { isSchemaSubset } from "./is-schema-subset";
-import { type NSDiagnostic, scanNS } from "./scan";
-import { simplifySchema } from "./simplify-schema";
-import { createComplexNodeParser, createSimpleNodeParser } from "./util";
+import { NSArrayNodeData } from "./nodes/array";
+import { NSFunctionNodeData } from "./nodes/fn-create";
+import { NSFunctionRunNodeData } from "./nodes/fn-run";
+import { NSIfNodeData } from "./nodes/if";
+import { NSPrimitiveNodeData } from "./nodes/primitive";
+import { NSReturnNodeData } from "./nodes/return";
+import { NSVarGetNodeData } from "./nodes/var-get";
+import { NSVarSetNodeData } from "./nodes/var-set";
 
 // --
 
-export const NSNodeIDSchema = z.enum([
-	"if",
-	"var-get",
-	"var-set",
-	"return",
-	"fn-call",
-	"fn-create"
-]);
+export const NSNodeIDSchema = z.enum(["if", "var-get", "var-set", "return", "fn-run", "fn-create"]);
 export type NSNodeID = z.infer<typeof NSNodeIDSchema>;
 
 // --
-
-export const NSPrimitiveNodeData = createSimpleNodeParser({
-	schema: z.union([z.string(), z.number(), z.boolean(), z.null()]),
-	execute: (node) => node,
-	scan(node) {
-		const notes: NSDiagnostic[] = [];
-		if (node === null) return { schema: z.null(), notes };
-		return {
-			notes,
-			schema: z.literal(node)
-		};
-	}
-});
-export type NSPrimitiveNode = z.infer<typeof NSPrimitiveNodeData.schema>;
-
-export const NSArrayNodeData = createSimpleNodeParser({
-	schema: z.array(z.unknown()),
-	execute: (nodes, ctx) => nodes.map((node) => executeNS(node, ctx)),
-	scan: (node, ctx) => {
-		const scans = node.map((n) => scanNS(n, ctx));
-		const schemas = scans.map((s) => s.schema);
-		const notes = scans.map((s) => s.notes);
-		const totalSchema =
-			schemas.length > 0 ? z.tuple(schemas as [z.ZodType, ...z.ZodType[]]) : z.array(z.never());
-		return { notes: notes.flat(), schema: totalSchema };
-	}
-});
-export type NSArrayNode = z.infer<typeof NSArrayNodeData.schema>;
-
-export const NSIfNodeData = createComplexNodeParser({
-	nstype: "if",
-	props: ["if", "yes", "no"],
-	// checks: [
-	// 	{
-	// 		code: "IF_BOOLEAN",
-	// 		check: (node) => isSameType(z.boolean(), diagnose(node.if))
-	// 	},
-	// 	{
-	// 		code: "YES_AND_NO_SAME_TYPE",
-	// 		check: (node) => {
-	// 			return isSameType(diagnose(node.yes), diagnose(node.no));
-	// 		}
-	// 	}
-	// ],
-	execute: (node, ctx) =>
-		executeNS(node.if, ctx) ? executeNS(node.yes, ctx) : executeNS(node.no, ctx),
-	scan: (node, ctx) => {
-		const scannedIf = scanNS(node.if, ctx);
-		const parsedIf = isSchemaSubset(z.boolean(), scannedIf.schema);
-		if (!parsedIf) throw new NSError("If node condition does not parse to a boolean", node);
-		const scannedYes = scanNS(node.yes, ctx);
-		const scannedNo = scanNS(node.no, ctx);
-		const NoAndYesSchema = simplifySchema(z.intersection(scannedYes.schema, scannedNo.schema));
-		return {
-			schema: NoAndYesSchema,
-			notes: [...scannedIf.notes, ...scannedYes.notes, ...scannedNo.notes]
-		};
-	}
-});
-export type NSIfNode = z.infer<typeof NSIfNodeData.schema>;
-
-export const NSVarGetNodeData = createComplexNodeParser({
-	nstype: "var-get",
-	props: ["id"],
-	execute: (node, ctx) => ctx.getVar(executeNS(node.id, ctx) as string)
-	// scan(node, ctx) {
-	// 	const id = scan(node.id)
-	// 	ctx.getVar(node.id)
-	// } // Can't do this part yet bc "id" needs to be more specific.
-});
-export type NSVarGetNode = z.infer<typeof NSVarGetNodeData.schema>;
-
-export const NSVarSetNodeData = createComplexNodeParser({
-	nstype: "var-set",
-	props: ["id", "value"],
-	execute: (node, ctx) => ctx.setVar(executeNS(node.id, ctx) as string, executeNS(node.value, ctx))
-	// scan(node, ctx) {	},
-});
-export type NSVarSetNode = z.infer<typeof NSVarSetNodeData.schema>;
-
-export const NSReturnNodeData = createComplexNodeParser({
-	nstype: "return",
-	props: ["value"],
-	execute: (node, ctx) => ({ ...node, value: executeNS(node.value, ctx) })
-});
-export type NSReturnNode = z.infer<typeof NSReturnNodeData.schema>;
-
-// export const NSProgramNodeData =
-// 	nstype: "program",
-// 	props: ["items"],
-// 	execute(node, ctx) {
-// 		const instructions = executeNS(node.items, ctx) as unknown[];
-// 		const NSMiniReturnNodeSchema = z.object({
-// 			_nstype: z.literal("return"),
-// 			value: z.unknown()
-// 		});
-// 		let lastResult: unknown = null;
-// 		for (const instruction of instructions) {
-// 			lastResult = instruction;
-// 			const parsedNode = NSMiniReturnNodeSchema.safeParse(instruction);
-// 			if (parsedNode.success) return parsedNode.data.value;
-// 		}
-// 		return lastResult;
-// 	}
-// 	// scan(node, ctx) {
-// 	// 	const notes = [];
-// 	// 	const instructions = scanNS(node.items, ctx);
-// 	// 	const NSMiniReturnNodeSchema = z.object({
-// 	// 		_nstype: z.literal("return"),
-// 	// 		value: z.unknown()
-// 	// 	});
-
-// 	// 	let lastResult: unknown = null;
-// 	// 	for (const instruction of instructions.schema) {
-// 	// 		lastResult = instruction;
-// 	// 		const parsedNode = NSMiniReturnNodeSchema.safeParse(instruction);
-// 	// 		if (parsedNode.success) return parsedNode.data.value;
-// 	// 	}
-// 	// 	return lastResult;
-
-// 	// }
-// });
-// export type NSProgramNode = z.infer<typeof NSProgramNodeData.schema>;
-
-// export const NSFunctionCreateNodeData = createComplexNodeParser({
-// 	nstype: "fn-create",
-// 	props: ["inputs", "body"],
-// 	execute(node, ctx) {
-// 		return node;
-// 	}
-// });
-// export type NSFunctionCreateNode = z.infer<typeof NSFunctionCreateNodeData.schema>;
-
-export const NSFunctionCallNodeData = createComplexNodeParser({
-	nstype: "fn-call",
-	props: ["id", "args"],
-	execute(node, ctx) {
-		const id = executeNS(node.id,ctx)
-		const fn =
-			basicFunctionRegistry.find((fn) => fn.id === id)
-			// || (ctx.getVar(id) as NSFunctionCreateNode);
-		if (!fn) throw new NSError(`Function ${node.id} not found`, node);
-		const oldArgs = executeNS(node.args, ctx);
-		const parsedArgs = fn.inputs.safeParse(oldArgs);
-		// @ts-expect-error because ts don't understand that "execute" and "args" related
-		return fn.execute(...parsedArgs.data);
-	}
-});
-export type NSFunctionCallNode = z.infer<typeof NSFunctionCallNodeData.schema>;
-
 export const NSMinimumComplexNodeSchema = z.object({ _nstype: NSNodeIDSchema });
-
 export const NSSimpleNodesData = [NSPrimitiveNodeData, NSArrayNodeData];
 export const NSComplexNodesData = [
 	NSIfNodeData,
 	NSVarGetNodeData,
 	NSVarSetNodeData,
 	NSReturnNodeData,
-	// NSFunctionCreateNodeData,
-	NSFunctionCallNodeData
+	NSFunctionNodeData,
+	NSFunctionRunNodeData
 ];
 export const NSNodeData = [...NSSimpleNodesData, ...NSComplexNodesData];
 export const NSSimpleNodeSchema = z.union(NSSimpleNodesData.map((n) => n.schema));

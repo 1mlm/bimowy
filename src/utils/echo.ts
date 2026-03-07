@@ -7,7 +7,7 @@ const emojis = {
 	warn: "⚠️",
 	info: "🟦",
 	debug: "🐛",
-	skip: "⏭️",
+	skip: "⏭️ ",
 	prep: "⏳",
 	start: "🚀",
 	end: "🏁",
@@ -22,8 +22,8 @@ export function echo(emoji: Emoji, message: unknown, level: number = 0) {
 	const now = new Date();
 
 	const formattedNow =
-		`${String(now.getMonth() + 1).padStart(2, "0")}` +
-		`/${String(now.getDate()).padStart(2, "0")}` +
+		`${String(now.getDate()).padStart(2, "0")}D` +
+		`/${String(now.getMonth() + 1).padStart(2, "0")}M` +
 		` ${String(now.getHours()).padStart(2, "0")}` +
 		`:${String(now.getMinutes()).padStart(2, "0")}` +
 		`:${String(now.getSeconds()).padStart(2, "0")}`;

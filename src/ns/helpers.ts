@@ -1,11 +1,9 @@
-import type {
-	NSFunctionCallNode,
-	NSIfNode,
-	NSNode,
-	NSReturnNode,
-	NSVarGetNode,
-	NSVarSetNode
-} from "./nodes";
+import type { NSNode } from "./nodes";
+import type { NSFunctionRunNode } from "./nodes/fn-run";
+import type { NSIfNode } from "./nodes/if";
+import type { NSReturnNode } from "./nodes/return";
+import type { NSVarGetNode } from "./nodes/var-get";
+import type { NSVarSetNode } from "./nodes/var-set";
 
 export const $ = {
 	return: (value: NSNode): NSReturnNode => ({ _nstype: "return", value }),
@@ -24,8 +22,13 @@ export const $ = {
 		_nstype: "var-get",
 		id
 	}),
-	fn: (id: NSNode, args: NSNode): NSFunctionCallNode => ({
-		_nstype: "fn-call",
+	fnRun: (id: NSNode, args: NSNode): NSFunctionRunNode => ({
+		_nstype: "fn-run",
+		id,
+		args
+	}),
+	fnCreate: (id: NSNode, args: NSNode) => ({
+		_nstype: "fn-create",
 		id,
 		args
 	})

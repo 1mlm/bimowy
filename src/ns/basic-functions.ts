@@ -1,6 +1,17 @@
 import z from "zod";
 
-// Function creator
+// Generic interface captures the relationship between inputs/output/execute
+export interface BasicFunction<
+	In extends z.ZodArray | z.ZodTuple = z.ZodArray<z.ZodUnknown> | z.ZodTuple,
+	Out extends z.ZodType = z.ZodType
+> {
+	id: string;
+	inputs: In; // Zod schema available at runtime
+	output: Out; // Zod schema available at runtime
+	execute: (...args: z.infer<In>) => z.infer<Out>; // Typed function at compile-time
+}
+
+// Basic Function creator - preserves generic relationship
 function $<In extends z.ZodArray | z.ZodTuple, Out extends z.ZodType>({
 	id,
 	inputs,
@@ -11,7 +22,7 @@ function $<In extends z.ZodArray | z.ZodTuple, Out extends z.ZodType>({
 	inputs: In;
 	output: Out;
 	execute: (...args: z.infer<In>) => z.infer<Out>;
-}) {
+}): BasicFunction<In, Out> {
 	return { id, inputs, output, execute };
 }
 
@@ -23,12 +34,26 @@ const basicOperationsExecuters = {
 	"**": (a, b) => a ** b
 } satisfies Record<string, (a: number, b: number) => number>;
 
+type BasicOperator = keyof typeof basicOperationsExecuters;
+
+function assertIsOperator(op: string): asserts op is BasicOperator {
+	if (!(op in basicOperationsExecuters)) {
+		throw new Error(`Invalid operator: ${op}`);
+	}
+}
+
 export const basicOperationFunction = $({
 	id: "op",
-	inputs: z.tuple([z.enum(Object.keys(basicOperationsExecuters)), z.number(), z.number()]),
-	outputs: z.number(),
-	// @ts-expect-error
-	execute: (op, a, b) => basicOperationsExecuters[op](a, b)
+	inputs: z.tuple([
+		z.enum(Object.keys(basicOperationsExecuters) as [string, ...string[]]),
+		z.number(),
+		z.number()
+	]),
+	output: z.number(),
+	execute: (op, a, b) => {
+		assertIsOperator(op);
+		return basicOperationsExecuters[op](a, b);
+	}
 });
 
 const basicComparisonExecuters = {
@@ -41,12 +66,26 @@ const basicComparisonExecuters = {
 	// } satisfies Record<string, <T>(a: T, b: T) => boolean>;
 } satisfies Record<string, (a: number, b: number) => boolean>;
 
+type ComparisonOperator = keyof typeof basicComparisonExecuters;
+
+function assertIsComparisonOperator(op: string): asserts op is ComparisonOperator {
+	if (!(op in basicComparisonExecuters)) {
+		throw new Error(`Invalid comparison operator: ${op}`);
+	}
+}
+
 export const basicComparisonFunction = $({
 	id: "compare",
-	inputs: z.tuple([z.enum(Object.keys(basicComparisonExecuters)), z.number(), z.number()]),
-	outputs: z.boolean(),
-	// @ts-expect-error
-	execute: (op, a, b) => basicComparisonExecuters[op](a, b)
+	inputs: z.tuple([
+		z.enum(Object.keys(basicComparisonExecuters) as [string, ...string[]]),
+		z.number(),
+		z.number()
+	]),
+	output: z.boolean(),
+	execute: (op, a, b) => {
+		assertIsComparisonOperator(op);
+		return basicComparisonExecuters[op](a, b);
+	}
 });
 
 export const otherFunctions = [
@@ -63,4 +102,4 @@ export const basicFunctionRegistry = [
 	basicOperationFunction,
 	basicComparisonFunction,
 	...otherFunctions
-];
+] as BasicFunction[];
