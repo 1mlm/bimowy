@@ -1,6 +1,6 @@
 import type z from "zod";
 import { executeNS } from "../execute";
-import { createComplexNodeParser } from "../util";
+import { createComplexNodeParser } from "../nodes.util";
 
 export const NSVarSetNodeData = createComplexNodeParser({
 	nstype: "var-set",

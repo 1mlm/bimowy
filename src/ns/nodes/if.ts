@@ -2,9 +2,9 @@ import z from "zod";
 import { NSError } from "../error";
 import { executeNS } from "../execute";
 import { isSchemaSubset } from "../is-schema-subset";
+import { createComplexNodeParser } from "../nodes.util";
 import { scanNS } from "../scan";
 import { simplifySchema } from "../simplify-schema";
-import { createComplexNodeParser } from "../util";
 
 export const NSIfNodeData = createComplexNodeParser({
 	nstype: "if",

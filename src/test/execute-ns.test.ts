@@ -20,22 +20,22 @@ const executeTestCases = [
 	],
 
 	// Function calls - arithmetic
-	[15, $.fn("op", ["+", 5, 10])],
-	[16, $.fn("op", ["-", 20, 4])],
-	[12, $.fn("op", ["*", 3, 4])],
-	[5, $.fn("op", ["/", 10, 2])],
+	[15, $.fnRun("op", ["+", 5, 10])],
+	[16, $.fnRun("op", ["-", 20, 4])],
+	[12, $.fnRun("op", ["*", 3, 4])],
+	[5, $.fnRun("op", ["/", 10, 2])],
 
 	// Function calls - comparison
-	[true, $.fn("compare", [">", 10, 5])],
-	[false, $.fn("compare", [">", 5, 10])],
-	[true, $.fn("compare", ["=", 7, 7])],
+	[true, $.fnRun("compare", [">", 10, 5])],
+	[false, $.fnRun("compare", [">", 5, 10])],
+	[true, $.fnRun("compare", ["=", 7, 7])],
 
 	// If statements
-	["yes", $.if(true, { yes: "yes", no: "no" })],
-	["no", $.if(false, { yes: "yes", no: "no" })],
+	["yes", $.cond(true, { yes: "yes", no: "no" })],
+	["no", $.cond(false, { yes: "yes", no: "no" })],
 	[
 		"bigger",
-		$.if($.fn("compare", [">", 10, 5]), {
+		$.cond($.fnRun("compare", [">", 10, 5]), {
 			yes: "bigger",
 			no: "smaller"
 		})

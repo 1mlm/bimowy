@@ -1,7 +1,7 @@
 import type z from "zod";
 import { executeNS } from "../execute";
-import { createComplexNodeParser } from "../util";
-import { assertIsString } from "./fn-run";
+import { createComplexNodeParser } from "../nodes.util";
+import { assertIsString } from "./util";
 
 export const NSVarGetNodeData = createComplexNodeParser({
 	nstype: "var-get",
