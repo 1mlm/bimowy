@@ -1,9 +1,9 @@
 import z from "zod";
-import { executeNS } from "../execute";
-import { scanNS } from "../scan";
-import { simplifySchema } from "../simplify-schema";
+import { executeNS } from "@/ns/execute";
+import { scanNS } from "@/ns/scan";
+import { simplifySchema } from "@/ns/simplify-schema";
+import { createComplexNodeParser } from "../util";
 import { assertIsBooleanSchema } from "./if.util";
-import { createComplexNodeParser } from "./util";
 
 export const NSIfNodeData = createComplexNodeParser({
 	nstype: "if",

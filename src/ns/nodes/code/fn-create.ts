@@ -1,5 +1,5 @@
 import type z from "zod";
-import { createComplexNodeParser } from "./util";
+import { createComplexNodeParser } from "@/ns/nodes/util";
 
 export const NSFunctionNodeData = createComplexNodeParser({
 	nstype: "fn-create",

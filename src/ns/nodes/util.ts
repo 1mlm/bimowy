@@ -1,8 +1,8 @@
 import z from "zod";
-import type { RuntimeContext, ScantimeContext } from "../context";
-import { NSError } from "../error";
-import type { NSNodeID } from "../nodes";
-import type { NSScan } from "../scan";
+import type { RuntimeContext, ScantimeContext } from "@/ns/context";
+import { NSError } from "@/ns/error";
+import type { NSNodeID } from "@/ns/nodes";
+import type { NSScan } from "@/ns/scan";
 
 export function createSimpleNodeParser<Schema extends z.ZodType>({
 	schema,

@@ -1,7 +1,7 @@
-import { basicFunctionRegistry } from "./basic-functions";
 import { RuntimeContext } from "./context";
 import { NSError } from "./error";
-import { NSComplexNodesData, NSMinimumComplexNodeSchema, NSSimpleNodesData } from "./nodes";
+import { NSComplexCodeNodesData, NSMinimumComplexNodeSchema, NSSimpleCodeNodesData } from "./nodes";
+import { basicFunctionRegistry } from "./nodes/code/fn-basic";
 
 function createDefaultRuntimeContext(): RuntimeContext {
 	const ctx = new RuntimeContext();
@@ -12,7 +12,7 @@ function createDefaultRuntimeContext(): RuntimeContext {
 }
 
 export function executeNS(node: unknown, ctx = createDefaultRuntimeContext()): unknown {
-	for (const simpleParser of NSSimpleNodesData) {
+	for (const simpleParser of NSSimpleCodeNodesData) {
 		const parsedNode = simpleParser.schema.safeParse(node);
 		if (!parsedNode.success) continue;
 		// @ts-expect-error
@@ -21,7 +21,7 @@ export function executeNS(node: unknown, ctx = createDefaultRuntimeContext()): u
 	const minimumNode = NSMinimumComplexNodeSchema.safeParse(node);
 	if (!minimumNode.success) throw new NSError("Unknown Node", node);
 
-	const complexParser = NSComplexNodesData.find((c) => c.nstype === minimumNode.data._nstype);
+	const complexParser = NSComplexCodeNodesData.find((c) => c.nstype === minimumNode.data._nstype);
 	if (!complexParser) throw new NSError("Unknown Node Type", node);
 	// @ts-expect-error
 	return complexParser.execute(node, ctx);

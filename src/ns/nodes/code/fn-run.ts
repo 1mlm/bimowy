@@ -1,14 +1,14 @@
 import type z from "zod";
-import { RuntimeContext } from "../context";
-import { NSError } from "../error";
-import { executeNS } from "../execute";
+import { RuntimeContext } from "@/ns/context";
+import { NSError } from "@/ns/error";
+import { executeNS } from "@/ns/execute";
+import { assertIsArray, createComplexNodeParser } from "@/ns/nodes/util";
 import {
 	assertBasicFunctionArgsParsed,
 	assertIsCustomFunction,
 	isBasicFunction,
 	isReturnNode
 } from "./fn-run.util";
-import { assertIsArray, createComplexNodeParser } from "./util";
 
 export const NSFunctionRunNodeData = createComplexNodeParser({
 	nstype: "fn-run",

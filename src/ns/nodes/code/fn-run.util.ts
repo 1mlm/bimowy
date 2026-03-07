@@ -1,5 +1,5 @@
-import type { BasicFunction } from "../basic-functions";
-import { NSError } from "../error";
+import { NSError } from "@/ns/error";
+import type { BasicFunction } from "./fn-basic";
 import { type NSFunctionNode, NSFunctionNodeData } from "./fn-create";
 import { type NSReturnNode, NSReturnNodeData } from "./return";
 

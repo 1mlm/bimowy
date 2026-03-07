@@ -1,12 +1,16 @@
 import z from "zod";
-import { NSArrayNodeData } from "./nodes/array";
-import { NSFunctionNodeData } from "./nodes/fn-create";
-import { NSFunctionRunNodeData } from "./nodes/fn-run";
-import { NSIfNodeData } from "./nodes/if";
-import { NSPrimitiveNodeData } from "./nodes/primitive";
-import { NSReturnNodeData } from "./nodes/return";
-import { NSVarGetNodeData } from "./nodes/var-get";
-import { NSVarSetNodeData } from "./nodes/var-set";
+import { NSArrayNodeData } from "./nodes/code/array";
+import { NSFunctionNodeData } from "./nodes/code/fn-create";
+import { NSFunctionRunNodeData } from "./nodes/code/fn-run";
+import { NSIfNodeData } from "./nodes/code/if";
+import { NSPrimitiveNodeData } from "./nodes/code/primitive";
+import { NSReturnNodeData } from "./nodes/code/return";
+import { NSVarGetNodeData } from "./nodes/code/var-get";
+import { NSVarSetNodeData } from "./nodes/code/var-set";
+import { NSUIInputNodeData } from "./nodes/ui/input";
+import { NSUIParagraphNodeData } from "./nodes/ui/paragraph";
+import { NSUITextNodeData } from "./nodes/ui/text";
+import { NSUIWidgetNodeData } from "./nodes/ui/widget";
 
 // --
 
@@ -26,9 +30,11 @@ export const NSComplexNodeIDSchema = z.enum([
 export type NSNodeID = z.infer<typeof NSComplexNodeIDSchema>;
 
 // --
+
 export const NSMinimumComplexNodeSchema = z.object({ _nstype: NSComplexNodeIDSchema });
-export const NSSimpleNodesData = [NSPrimitiveNodeData, NSArrayNodeData];
-export const NSComplexNodesData = [
+
+export const NSSimpleCodeNodesData = [NSPrimitiveNodeData, NSArrayNodeData];
+export const NSComplexCodeNodesData = [
 	NSIfNodeData,
 	NSVarGetNodeData,
 	NSVarSetNodeData,
@@ -36,10 +42,18 @@ export const NSComplexNodesData = [
 	NSFunctionNodeData,
 	NSFunctionRunNodeData
 ];
-export const NSNodeData = [...NSSimpleNodesData, ...NSComplexNodesData];
-export const NSSimpleNodeSchema = z.union(NSSimpleNodesData.map((n) => n.schema));
+export const NSUINodesData = [
+	NSUIInputNodeData,
+	NSUITextNodeData,
+	NSUIParagraphNodeData,
+	NSUIWidgetNodeData
+];
 
-export const NSComplexNodeSchema = z.union(NSComplexNodesData.map((n) => n.schema));
+export const NSNodeData = [...NSSimpleCodeNodesData, ...NSComplexCodeNodesData, ...NSUINodesData];
 
-export const NSNodeSchema = z.union([NSSimpleNodeSchema, NSComplexNodeSchema]);
+export const NSSimpleNodeSchema = z.union(NSSimpleCodeNodesData.map((n) => n.schema));
+export const NSComplexNodeSchema = z.union(NSComplexCodeNodesData.map((n) => n.schema));
+export const NSUINodeSchema = z.union(NSUINodesData.map((n) => n.schema));
+
+export const NSNodeSchema = z.union([NSSimpleNodeSchema, NSComplexNodeSchema, NSUINodeSchema]);
 export type NSNode = z.infer<typeof NSNodeSchema>;
