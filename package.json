@@ -1,18 +1,28 @@
 {
 	"name": "bimowy",
 	"version": "0.1.0",
+	"repository": {
+		"url": "1mlm/bimowy"
+	},
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack -p 3003",
 		"build": "npm run db;next build",
 		"start": "next start",
+
 		"format": "biome format --write",
+
 		"check": "tsc --noEmit",
-		"all": "npm run format && npm run check && npm run test",
+
 		"db": "prisma migrate dev --name cmd && prisma generate",
-		"play": "tsx watch src/playground",
+
+		"play": "tsx src/playground",
+		"play:w": "tsx watch src/playground",
+
 		"test": "tsx src/test/index.test.ts",
-		"test:w": "tsx watch src/test/index.test.ts"
+		"test:w": "tsx watch src/test/index.test.ts",
+
+		"all": "npm run format && npm run check && npm run test"
 	},
 	"dependencies": {
 		"@dnd-kit/react": "^0.3.2",

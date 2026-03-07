@@ -63,8 +63,7 @@ const combinations = [
 	[false, INTERSECTION_APPLE_42, LITERAL42]
 ] satisfies CompareTestCase[];
 
-const compareTestCases = combinations.map(([expected, main, input], i) => ({
-	name: `${i}`,
+const compareTestCases = combinations.map(([expected, main, input]) => ({
 	expected,
 	actual: () => isSchemaSubset(main, input)
 }));

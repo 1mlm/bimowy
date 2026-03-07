@@ -10,11 +10,23 @@ import { NSVarSetNodeData } from "./nodes/var-set";
 
 // --
 
-export const NSNodeIDSchema = z.enum(["if", "var-get", "var-set", "return", "fn-run", "fn-create"]);
-export type NSNodeID = z.infer<typeof NSNodeIDSchema>;
+export const NSComplexNodeIDSchema = z.enum([
+	"if",
+	"var-get",
+	"var-set",
+	"return",
+	"fn-run",
+	"fn-create",
+	// --
+	"ui-widget",
+	"ui-paragraph",
+	"ui-input",
+	"ui-text"
+]);
+export type NSNodeID = z.infer<typeof NSComplexNodeIDSchema>;
 
 // --
-export const NSMinimumComplexNodeSchema = z.object({ _nstype: NSNodeIDSchema });
+export const NSMinimumComplexNodeSchema = z.object({ _nstype: NSComplexNodeIDSchema });
 export const NSSimpleNodesData = [NSPrimitiveNodeData, NSArrayNodeData];
 export const NSComplexNodesData = [
 	NSIfNodeData,
@@ -26,6 +38,7 @@ export const NSComplexNodesData = [
 ];
 export const NSNodeData = [...NSSimpleNodesData, ...NSComplexNodesData];
 export const NSSimpleNodeSchema = z.union(NSSimpleNodesData.map((n) => n.schema));
+
 export const NSComplexNodeSchema = z.union(NSComplexNodesData.map((n) => n.schema));
 
 export const NSNodeSchema = z.union([NSSimpleNodeSchema, NSComplexNodeSchema]);

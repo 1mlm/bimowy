@@ -51,3 +51,6 @@ export type NSBaseComplexNode<NSType extends NSNodeID, NSKey extends string> = {
 export function assertIsString(wtv: unknown): asserts wtv is string {
 	if (typeof wtv !== "string") throw new NSError("Value is not a string", wtv);
 }
+export function assertIsArray(wtv: unknown): asserts wtv is unknown[] {
+	if (!Array.isArray(wtv)) throw new NSError("Value is not an array", wtv);
+}

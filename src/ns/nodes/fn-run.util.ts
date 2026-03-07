@@ -3,10 +3,6 @@ import { NSError } from "../error";
 import { type NSFunctionNode, NSFunctionNodeData } from "./fn-create";
 import { type NSReturnNode, NSReturnNodeData } from "./return";
 
-export function assertIsArray(wtv: unknown): asserts wtv is unknown[] {
-	if (!Array.isArray(wtv)) throw new NSError("Value is not an array", wtv);
-}
-
 export function isBasicFunction(value: unknown): value is BasicFunction {
 	if (typeof value !== "object" || value === null) return false;
 	const candidate = value as Record<string, unknown>;

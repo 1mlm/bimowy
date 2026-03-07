@@ -8,7 +8,7 @@ import type { NSVarSetNode } from "./nodes/var-set";
 
 const rtrn = (value: NSNode): NSReturnNode => ({ _nstype: "return", value });
 
-const cond = (cond: NSNode, { yes, no }: { yes: NSNode; no: NSNode }): NSIfNode => ({
+const cond = (cond: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 	_nstype: "if",
 	if: cond,
 	yes,
@@ -37,4 +37,4 @@ const fnCreate = (inputs: NSNode, instructions: NSNode): NSFunctionNode => ({
 const fnSet = (id: NSNode, inputs: NSNode, instructions: NSNode): NSVarSetNode =>
 	varSet(id, fnCreate(inputs, instructions));
 
-export const $ = { rtrn, cond, varSet, varGet, fnRun, basicFnRun, fnCreate, fnSet };
+export const $ns = { rtrn, cond, varSet, varGet, fnRun, basicFnRun, fnCreate, fnSet };

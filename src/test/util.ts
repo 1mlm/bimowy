@@ -23,12 +23,11 @@ export function $group(name: string, testCases: TestCase[]) {
 	suite(name, () => {
 		for (const [i, testCase] of testCases.entries()) {
 			if (isThrowCase(testCase)) {
-				const testName = [i, "❇️ ", testCase.name].filter((v) => !!v).join(" ");
+				const testName = [i, "❇️ "].filter((v) => !!v).join(" ");
 				test(testName, () => assert.throws(() => testCase.actual()));
 				continue;
 			}
-			const testName = [i, testCase.name].filter((v) => !!v).join(" ");
-			test(testName, () => assert.deepStrictEqual(testCase.actual(), testCase.expected));
+			test(`${i}`, () => assert.deepStrictEqual(testCase.actual(), testCase.expected));
 		}
 	});
 }

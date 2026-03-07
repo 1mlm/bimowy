@@ -4,12 +4,11 @@ import { NSError } from "../error";
 import { executeNS } from "../execute";
 import {
 	assertBasicFunctionArgsParsed,
-	assertIsArray,
 	assertIsCustomFunction,
 	isBasicFunction,
 	isReturnNode
 } from "./fn-run.util";
-import { createComplexNodeParser } from "./util";
+import { assertIsArray, createComplexNodeParser } from "./util";
 
 export const NSFunctionRunNodeData = createComplexNodeParser({
 	nstype: "fn-run",
