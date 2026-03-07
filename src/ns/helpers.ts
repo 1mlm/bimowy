@@ -1,10 +1,10 @@
 import type { NSNode } from "./nodes";
+import type { NSFunctionNode } from "./nodes/code/fn-create";
+import type { NSFunctionRunNode } from "./nodes/code/fn-run";
+import type { NSIfNode } from "./nodes/code/if";
+import type { NSReturnNode } from "./nodes/code/return";
 import type { NSVarGetNode } from "./nodes/code/var-get";
-import type { NSFunctionNode } from "./nodes/fn-create";
-import type { NSFunctionRunNode } from "./nodes/fn-run";
-import type { NSIfNode } from "./nodes/if";
-import type { NSReturnNode } from "./nodes/return";
-import type { NSVarSetNode } from "./nodes/var-set";
+import type { NSVarSetNode } from "./nodes/code/var-set";
 
 const rtrn = (value: NSNode): NSReturnNode => ({ _nstype: "return", value });
 
