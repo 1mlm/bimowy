@@ -63,7 +63,10 @@ const combinations = [
 	[false, INTERSECTION_APPLE_42, LITERAL42]
 ] satisfies CompareTestCase[];
 
-$group(
-	"areCompatible",
-	combinations.map(([expected, main, input]) => [expected, () => isSchemaSubset(main, input)])
-);
+const compareTestCases = combinations.map(([expected, main, input], i) => ({
+	name: `${i}`,
+	expected,
+	actual: () => isSchemaSubset(main, input)
+}));
+
+$group("areCompatible", compareTestCases);
