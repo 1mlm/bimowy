@@ -59,7 +59,7 @@ export const otherFunctions = [
 	// ...
 ] as const;
 
-export const functionRegistry = [
+export const basicFunctionRegistry = [
 	basicOperationFunction,
 	basicComparisonFunction,
 	...otherFunctions

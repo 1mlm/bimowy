@@ -1,11 +1,11 @@
-import { type ZodType, z } from "zod";
+import z, { type ZodType } from "zod";
 import {
 	areSelfSubset,
 	getIntersectionSchemas,
 	getUnionSchemas,
 	isIntersectionSchema,
 	isUnionSchema
-} from "./subset.util";
+} from "./is-schema-subset";
 
 export function simplifySchema(schema: ZodType): ZodType {
 	if (isUnionSchema(schema)) {

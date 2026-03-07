@@ -43,7 +43,7 @@ export const data: SidebarData = {
 	main: {
 		href: "/",
 		icon: MascotIcon,
-		title: "Hub41",
+		title: "o41",
 		subtitle: "Learning but fun ig"
 	},
 	nav: [

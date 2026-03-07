@@ -11,7 +11,7 @@ const outfitFont = Outfit({
 
 export const metadata: Metadata = {
 	description: "Learning but it's actually fun",
-	title: "Hub41"
+	title: "AllForOne"
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {

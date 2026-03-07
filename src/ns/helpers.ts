@@ -2,7 +2,6 @@ import type {
 	NSFunctionCallNode,
 	NSIfNode,
 	NSNode,
-	NSProgramNode,
 	NSReturnNode,
 	NSVarGetNode,
 	NSVarSetNode
@@ -16,7 +15,6 @@ export const $ = {
 		yes,
 		no
 	}),
-	prgm: (items: NSNode): NSProgramNode => ({ _nstype: "program", items }),
 	varSet: (id: NSNode, value: NSNode): NSVarSetNode => ({
 		_nstype: "var-set",
 		id,
@@ -27,7 +25,7 @@ export const $ = {
 		id
 	}),
 	fn: (id: NSNode, args: NSNode): NSFunctionCallNode => ({
-		_nstype: "function-call",
+		_nstype: "fn-call",
 		id,
 		args
 	})

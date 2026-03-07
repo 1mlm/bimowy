@@ -1,11 +1,11 @@
 import z from "zod";
+import { basicFunctionRegistry } from "./basic-functions";
 import { NSError } from "./error";
 import { executeNS } from "./execute";
-import { functionRegistry } from "./functions";
 import { isSchemaSubset } from "./is-schema-subset";
-import { createComplexNodeParser, createSimpleNodeParser } from "./nodes.util";
 import { type NSDiagnostic, scanNS } from "./scan";
 import { simplifySchema } from "./simplify-schema";
+import { createComplexNodeParser, createSimpleNodeParser } from "./util";
 
 // --
 
@@ -14,8 +14,8 @@ export const NSNodeIDSchema = z.enum([
 	"var-get",
 	"var-set",
 	"return",
-	"program",
-	"function-call"
+	"fn-call",
+	"fn-create"
 ]);
 export type NSNodeID = z.infer<typeof NSNodeIDSchema>;
 
@@ -107,57 +107,63 @@ export const NSReturnNodeData = createComplexNodeParser({
 });
 export type NSReturnNode = z.infer<typeof NSReturnNodeData.schema>;
 
-export const NSProgramNodeData = createComplexNodeParser({
-	nstype: "program",
-	props: ["items"],
-	execute(node, ctx) {
-		const instructions = executeNS(node.items, ctx) as unknown[];
-		const NSMiniReturnNodeSchema = z.object({
-			_nstype: z.literal("return"),
-			value: z.unknown()
-		});
-		let lastResult: unknown = null;
-		for (const instruction of instructions) {
-			lastResult = instruction;
-			const parsedNode = NSMiniReturnNodeSchema.safeParse(instruction);
-			if (parsedNode.success) return parsedNode.data.value;
-		}
-		return lastResult;
-	}
-	// scan(node, ctx) {
-	// 	const notes = [];
-	// 	const instructions = scanNS(node.items, ctx);
-	// 	const NSMiniReturnNodeSchema = z.object({
-	// 		_nstype: z.literal("return"),
-	// 		value: z.unknown()
-	// 	});
+// export const NSProgramNodeData =
+// 	nstype: "program",
+// 	props: ["items"],
+// 	execute(node, ctx) {
+// 		const instructions = executeNS(node.items, ctx) as unknown[];
+// 		const NSMiniReturnNodeSchema = z.object({
+// 			_nstype: z.literal("return"),
+// 			value: z.unknown()
+// 		});
+// 		let lastResult: unknown = null;
+// 		for (const instruction of instructions) {
+// 			lastResult = instruction;
+// 			const parsedNode = NSMiniReturnNodeSchema.safeParse(instruction);
+// 			if (parsedNode.success) return parsedNode.data.value;
+// 		}
+// 		return lastResult;
+// 	}
+// 	// scan(node, ctx) {
+// 	// 	const notes = [];
+// 	// 	const instructions = scanNS(node.items, ctx);
+// 	// 	const NSMiniReturnNodeSchema = z.object({
+// 	// 		_nstype: z.literal("return"),
+// 	// 		value: z.unknown()
+// 	// 	});
 
-	// 	let lastResult: unknown = null;
-	// 	for (const instruction of instructions.schema) {
-	// 		lastResult = instruction;
-	// 		const parsedNode = NSMiniReturnNodeSchema.safeParse(instruction);
-	// 		if (parsedNode.success) return parsedNode.data.value;
-	// 	}
-	// 	return lastResult;
+// 	// 	let lastResult: unknown = null;
+// 	// 	for (const instruction of instructions.schema) {
+// 	// 		lastResult = instruction;
+// 	// 		const parsedNode = NSMiniReturnNodeSchema.safeParse(instruction);
+// 	// 		if (parsedNode.success) return parsedNode.data.value;
+// 	// 	}
+// 	// 	return lastResult;
 
-	// }
-});
-export type NSProgramNode = z.infer<typeof NSProgramNodeData.schema>;
+// 	// }
+// });
+// export type NSProgramNode = z.infer<typeof NSProgramNodeData.schema>;
+
+// export const NSFunctionCreateNodeData = createComplexNodeParser({
+// 	nstype: "fn-create",
+// 	props: ["inputs", "body"],
+// 	execute(node, ctx) {
+// 		return node;
+// 	}
+// });
+// export type NSFunctionCreateNode = z.infer<typeof NSFunctionCreateNodeData.schema>;
 
 export const NSFunctionCallNodeData = createComplexNodeParser({
-	nstype: "function-call",
+	nstype: "fn-call",
 	props: ["id", "args"],
 	execute(node, ctx) {
-		const fn = functionRegistry.find((fn) => fn.id === node.id);
-		if (!fn) throw new NSError(`Function with ID '${node.id}' not found`, node);
+		const id = executeNS(node.id,ctx)
+		const fn =
+			basicFunctionRegistry.find((fn) => fn.id === id)
+			// || (ctx.getVar(id) as NSFunctionCreateNode);
+		if (!fn) throw new NSError(`Function ${node.id} not found`, node);
 		const oldArgs = executeNS(node.args, ctx);
 		const parsedArgs = fn.inputs.safeParse(oldArgs);
-		if (!parsedArgs.success)
-			throw new NSError("Invalid function args", {
-				node,
-				args: node.args,
-				error: parsedArgs.error
-			});
 		// @ts-expect-error because ts don't understand that "execute" and "args" related
 		return fn.execute(...parsedArgs.data);
 	}
@@ -172,7 +178,7 @@ export const NSComplexNodesData = [
 	NSVarGetNodeData,
 	NSVarSetNodeData,
 	NSReturnNodeData,
-	NSProgramNodeData,
+	// NSFunctionCreateNodeData,
 	NSFunctionCallNodeData
 ];
 export const NSNodeData = [...NSSimpleNodesData, ...NSComplexNodesData];
