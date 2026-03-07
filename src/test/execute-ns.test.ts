@@ -39,6 +39,16 @@ const executeTestCases = [
 			yes: "bigger",
 			no: "smaller"
 		})
+	],
+
+	// Custom function calls - expected input binding behavior
+	[42, $.fnRun($.fnCreate(["x"], [$.rtrn($.varGet("x"))]), [42])],
+	[
+		11,
+		$.fnRun(
+			$.fnCreate(["a", "b"], [$.rtrn($.basicFnRun("op", ["+", $.varGet("a"), $.varGet("b")]))]),
+			[5, 6]
+		)
 	]
 ] satisfies [unknown, unknown][];
 
