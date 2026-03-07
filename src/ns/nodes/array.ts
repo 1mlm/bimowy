@@ -1,9 +1,7 @@
 import z from "zod";
 import { executeNS } from "../execute";
-import { createSimpleNodeParser } from "../nodes.util";
 import { scanNS } from "../scan";
-
-// --
+import { createSimpleNodeParser } from "./util";
 
 export const NSArrayNodeData = createSimpleNodeParser({
 	schema: z.array(z.unknown()),

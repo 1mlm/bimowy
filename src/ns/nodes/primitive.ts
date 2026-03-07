@@ -1,8 +1,6 @@
 import z from "zod";
-import { createSimpleNodeParser } from "../nodes.util";
 import type { NSDiagnostic } from "../scan";
-
-// --
+import { createSimpleNodeParser } from "./util";
 
 export const NSPrimitiveNodeData = createSimpleNodeParser({
 	schema: z.union([z.string(), z.number(), z.boolean(), z.null()]),

@@ -1,15 +1,15 @@
 import z from "zod";
 
 // Generic interface captures the relationship between inputs/output/execute
-export interface BasicFunction<
+export type BasicFunction<
 	In extends z.ZodArray | z.ZodTuple = z.ZodArray<z.ZodUnknown> | z.ZodTuple,
 	Out extends z.ZodType = z.ZodType
-> {
+> = {
 	id: string;
 	inputs: In; // Zod schema available at runtime
 	output: Out; // Zod schema available at runtime
 	execute: (...args: z.infer<In>) => z.infer<Out>; // Typed function at compile-time
-}
+};
 
 // Basic Function creator - preserves generic relationship
 function $<In extends z.ZodArray | z.ZodTuple, Out extends z.ZodType>({

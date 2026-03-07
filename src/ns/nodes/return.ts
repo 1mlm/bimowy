@@ -1,6 +1,6 @@
 import type z from "zod";
 import { executeNS } from "../execute";
-import { createComplexNodeParser } from "../nodes.util";
+import { createComplexNodeParser } from "./util";
 
 export const NSReturnNodeData = createComplexNodeParser({
 	nstype: "return",

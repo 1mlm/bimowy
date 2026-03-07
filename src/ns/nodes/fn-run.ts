@@ -1,48 +1,35 @@
 import type z from "zod";
-import { NSError } from "../error";
 import { executeNS } from "../execute";
-import { createComplexNodeParser } from "../nodes.util";
 import {
+	assertBasicFunctionArgsParsed,
 	assertIsArray,
-	assertIsBasicFunction,
 	assertIsCustomFunction,
-	getBasicFunction,
-	getCustomFunction,
+	isBasicFunction,
 	isReturnNode
 } from "./fn-run.util";
-import { assertIsString } from "./util";
+import { createComplexNodeParser } from "./util";
 
 export const NSFunctionRunNodeData = createComplexNodeParser({
 	nstype: "fn-run",
-	props: ["id", "args"],
+	props: ["fn", "args"],
 	execute(node, ctx) {
-		const id = executeNS(node.id, ctx);
-		assertIsString(id);
+		const fnValue = executeNS(node.fn, ctx);
 
-		const customFn = getCustomFunction(id, ctx);
-		if (customFn) {
-			assertIsCustomFunction(customFn);
-			const instructions = executeNS(customFn.instructions, ctx);
-			assertIsArray(instructions);
-			for (const step of instructions) {
-				const res = executeNS(step, ctx);
-				if (isReturnNode(res)) return res.value;
-			}
-			return null; // No return statement found
+		if (isBasicFunction(fnValue)) {
+			const oldArgs = executeNS(node.args, ctx);
+			const parsedArgs = fnValue.inputs.safeParse(oldArgs);
+			assertBasicFunctionArgsParsed(parsedArgs, fnValue.id, oldArgs);
+			return fnValue.execute(...parsedArgs.data);
 		}
 
-		const fn = getBasicFunction(id);
-		assertIsBasicFunction(fn, id);
-
-		const oldArgs = executeNS(node.args, ctx);
-		const parsedArgs = fn.inputs.safeParse(oldArgs);
-		if (!parsedArgs.success) {
-			throw new NSError(`Invalid arguments for function ${id}`, {
-				args: oldArgs,
-				errors: parsedArgs.error
-			});
+		assertIsCustomFunction(fnValue);
+		const instructions = executeNS(fnValue.instructions, ctx);
+		assertIsArray(instructions);
+		for (const step of instructions) {
+			const res = executeNS(step, ctx);
+			if (isReturnNode(res)) return res.value;
 		}
-		return fn.execute(...parsedArgs.data);
+		return null; // No return statement found
 	}
 });
 

@@ -23,9 +23,9 @@ const varGet = (id: NSNode): NSVarGetNode => ({
 	_nstype: "var-get",
 	id
 });
-const fnRun = (id: NSNode, args: NSNode): NSFunctionRunNode => ({
+const fnRun = (fn: NSNode, args: NSNode): NSFunctionRunNode => ({
 	_nstype: "fn-run",
-	id,
+	fn,
 	args
 });
 const fnCreate = (inputs: NSNode, instructions: NSNode): NSFunctionNode => ({
