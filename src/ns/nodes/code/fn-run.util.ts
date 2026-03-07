@@ -1,7 +1,6 @@
 import { NSError } from "@/ns/error";
 import type { BasicFunction } from "./fn-basic";
 import { type NSFunctionNode, NSFunctionNodeData } from "./fn-create";
-import { type NSReturnNode, NSReturnNodeData } from "./return";
 
 export function isBasicFunction(value: unknown): value is BasicFunction {
 	if (typeof value !== "object" || value === null) return false;
@@ -13,7 +12,7 @@ export function isBasicFunction(value: unknown): value is BasicFunction {
 		candidate.inputs !== null &&
 		typeof candidate.output === "object" &&
 		candidate.output !== null
-	);
+	); // TODO: use schemas
 }
 
 export function assertIsCustomFunction(fn: unknown): asserts fn is NSFunctionNode {
@@ -32,8 +31,4 @@ export function assertBasicFunctionArgsParsed(
 			errors: parsedArgs.error
 		});
 	}
-}
-
-export function isReturnNode(node: unknown): node is NSReturnNode {
-	return NSReturnNodeData.schema.safeParse(node).success;
 }

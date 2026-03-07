@@ -1,5 +1,5 @@
 import type z from "zod";
-import { ScantimeContext } from "./context";
+import { ScantimeContext } from "./context/scantime";
 import { NSError } from "./error";
 import { NSNodeData } from "./nodes";
 

@@ -1,14 +1,14 @@
 import type z from "zod";
-import { RuntimeContext } from "@/ns/context";
+import { NSRuntimeContext } from "@/ns/context/runtime";
 import { NSError } from "@/ns/error";
 import { executeNS } from "@/ns/execute";
 import { assertIsArray, createComplexNodeParser } from "@/ns/nodes/util";
 import {
 	assertBasicFunctionArgsParsed,
 	assertIsCustomFunction,
-	isBasicFunction,
-	isReturnNode
+	isBasicFunction
 } from "./fn-run.util";
+import { type NSReturnNode, NSReturnNodeData } from "./return";
 
 export const NSFunctionRunNodeData = createComplexNodeParser({
 	nstype: "fn-run",
@@ -36,7 +36,7 @@ export const NSFunctionRunNodeData = createComplexNodeParser({
 			});
 		}
 
-		const ctx2 = new RuntimeContext(ctx);
+		const ctx2 = new NSRuntimeContext(ctx);
 		for (const [i, inputName] of inputNames.entries()) {
 			if (typeof inputName !== "string") {
 				throw new NSError("Custom function input names must be strings", {
@@ -59,3 +59,7 @@ export const NSFunctionRunNodeData = createComplexNodeParser({
 });
 
 export type NSFunctionRunNode = z.infer<typeof NSFunctionRunNodeData.schema>;
+
+export function isReturnNode(node: unknown): node is NSReturnNode {
+	return NSReturnNodeData.schema.safeParse(node).success;
+}

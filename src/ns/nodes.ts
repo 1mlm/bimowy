@@ -40,20 +40,17 @@ export const NSComplexCodeNodesData = [
 	NSVarSetNodeData,
 	NSReturnNodeData,
 	NSFunctionNodeData,
-	NSFunctionRunNodeData
-];
-export const NSUINodesData = [
+	NSFunctionRunNodeData,
 	NSUIInputNodeData,
 	NSUITextNodeData,
 	NSUIParagraphNodeData,
 	NSUIWidgetNodeData
 ];
 
-export const NSNodeData = [...NSSimpleCodeNodesData, ...NSComplexCodeNodesData, ...NSUINodesData];
+export const NSNodeData = [...NSSimpleCodeNodesData, ...NSComplexCodeNodesData];
 
 export const NSSimpleNodeSchema = z.union(NSSimpleCodeNodesData.map((n) => n.schema));
 export const NSComplexNodeSchema = z.union(NSComplexCodeNodesData.map((n) => n.schema));
-export const NSUINodeSchema = z.union(NSUINodesData.map((n) => n.schema));
 
-export const NSNodeSchema = z.union([NSSimpleNodeSchema, NSComplexNodeSchema, NSUINodeSchema]);
+export const NSNodeSchema = z.union([NSSimpleNodeSchema, NSComplexNodeSchema]);
 export type NSNode = z.infer<typeof NSNodeSchema>;

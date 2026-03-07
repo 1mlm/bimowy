@@ -1,10 +1,10 @@
-import { RuntimeContext } from "./context";
+import { NSRuntimeContext } from "./context/runtime";
 import { NSError } from "./error";
 import { NSComplexCodeNodesData, NSMinimumComplexNodeSchema, NSSimpleCodeNodesData } from "./nodes";
 import { basicFunctionRegistry } from "./nodes/code/fn-basic";
 
-function createDefaultRuntimeContext(): RuntimeContext {
-	const ctx = new RuntimeContext();
+function createDefaultRuntimeContext(): NSRuntimeContext {
+	const ctx = new NSRuntimeContext();
 	for (const fn of basicFunctionRegistry) {
 		ctx.setVar(fn.id, fn);
 	}
