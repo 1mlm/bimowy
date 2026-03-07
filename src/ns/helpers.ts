@@ -28,6 +28,7 @@ const fnRun = (fn: NSNode, args: NSNode): NSFunctionRunNode => ({
 	fn,
 	args
 });
+const basicFnRun = (id: string, args: NSNode): NSFunctionRunNode => fnRun(varGet(id), args);
 const fnCreate = (inputs: NSNode, instructions: NSNode): NSFunctionNode => ({
 	_nstype: "fn-create",
 	inputs,
@@ -35,6 +36,5 @@ const fnCreate = (inputs: NSNode, instructions: NSNode): NSFunctionNode => ({
 });
 const fnSet = (id: NSNode, inputs: NSNode, instructions: NSNode): NSVarSetNode =>
 	varSet(id, fnCreate(inputs, instructions));
-// const fnCreateAndRun = (id: NSNode, inputs: NSNode, instructions: NSNode): NSFunctionRunNode =>
 
-export const $ = { rtrn, cond, varSet, varGet, fnRun, fnCreate, fnSet };
+export const $ = { rtrn, cond, varSet, varGet, fnRun, basicFnRun, fnCreate, fnSet };

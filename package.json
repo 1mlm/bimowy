@@ -8,6 +8,7 @@
 		"start": "next start",
 		"format": "biome format --write",
 		"check": "tsc --noEmit",
+		"all": "npm run format && npm run check && npm run test",
 		"db": "prisma migrate dev --name cmd && prisma generate",
 		"play": "tsx watch src/playground",
 		"test": "tsx src/test/index.test.ts",

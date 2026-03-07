@@ -16,12 +16,6 @@ export function createSimpleNodeParser<Schema extends z.ZodType>({
 	return { schema, execute, scan };
 }
 
-export type NSBaseComplexNode<NSType extends NSNodeID, NSKey extends string> = {
-	_nstype: NSType;
-} & {
-	[key in NSKey]: unknown;
-};
-
 export function createComplexNodeParser<
 	T extends NSNodeID,
 	P extends string,
@@ -47,6 +41,12 @@ export function createComplexNodeParser<
 		execute
 	};
 }
+
+export type NSBaseComplexNode<NSType extends NSNodeID, NSKey extends string> = {
+	_nstype: NSType;
+} & {
+	[key in NSKey]: unknown;
+};
 
 export function assertIsString(wtv: unknown): asserts wtv is string {
 	if (typeof wtv !== "string") throw new NSError("Value is not a string", wtv);

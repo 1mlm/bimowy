@@ -20,22 +20,22 @@ const executeTestCases = [
 	],
 
 	// Function calls - arithmetic
-	[15, $.fnRun($.varGet("op"), ["+", 5, 10])],
-	[16, $.fnRun($.varGet("op"), ["-", 20, 4])],
-	[12, $.fnRun($.varGet("op"), ["*", 3, 4])],
-	[5, $.fnRun($.varGet("op"), ["/", 10, 2])],
+	[15, $.basicFnRun("op", ["+", 5, 10])],
+	[16, $.basicFnRun("op", ["-", 20, 4])],
+	[12, $.basicFnRun("op", ["*", 3, 4])],
+	[5, $.basicFnRun("op", ["/", 10, 2])],
 
 	// Function calls - comparison
-	[true, $.fnRun($.varGet("compare"), [">", 10, 5])],
-	[false, $.fnRun($.varGet("compare"), [">", 5, 10])],
-	[true, $.fnRun($.varGet("compare"), ["=", 7, 7])],
+	[true, $.basicFnRun("compare", [">", 10, 5])],
+	[false, $.basicFnRun("compare", [">", 5, 10])],
+	[true, $.basicFnRun("compare", ["=", 7, 7])],
 
 	// If statements
 	["yes", $.cond(true, { yes: "yes", no: "no" })],
 	["no", $.cond(false, { yes: "yes", no: "no" })],
 	[
 		"bigger",
-		$.cond($.fnRun($.varGet("compare"), [">", 10, 5]), {
+		$.cond($.basicFnRun("compare", [">", 10, 5]), {
 			yes: "bigger",
 			no: "smaller"
 		})
