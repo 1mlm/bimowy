@@ -19,7 +19,7 @@ const blocks: BlockProps[] = [
 	{
 		id: "if",
 		color: "green",
-		text: "If touched grass",
+		text: "Forever",
 		children: [
 			{ id: "cheer", color: "yellow", text: "Cheer" },
 			{ id: "turn-l", color: "purple", text: "Turn left" }
