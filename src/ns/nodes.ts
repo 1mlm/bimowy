@@ -23,7 +23,7 @@ export const NSComplexNodeIDSchema = z.enum([
 	"fn-create",
 	// --
 	"ui-widget",
-	"ui-paragraph",
+	"ui-prgh",
 	"ui-input",
 	"ui-text"
 ]);

@@ -3,7 +3,7 @@ import { executeNS } from "@/ns/execute";
 import { assertIsArray, createComplexNodeParser } from "../util";
 
 export const NSUIParagraphNodeData = createComplexNodeParser({
-	nstype: "ui-paragraph",
+	nstype: "ui-prgh",
 	props: ["items"],
 	execute(node, ctx) {
 		assertIsArray(node.items);

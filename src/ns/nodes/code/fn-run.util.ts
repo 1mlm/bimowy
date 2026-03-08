@@ -1,6 +1,6 @@
 import { NSError } from "@/ns/error";
-import type { BasicFunction } from "./fn-basic";
 import { type NSFunctionNode, NSFunctionNodeData } from "./fn-create";
+import type { BasicFunction } from "./fn-run.registry";
 
 export function isBasicFunction(value: unknown): value is BasicFunction {
 	if (typeof value !== "object" || value === null) return false;

@@ -5,6 +5,10 @@ import type { NSIfNode } from "./nodes/code/if";
 import type { NSReturnNode } from "./nodes/code/return";
 import type { NSVarGetNode } from "./nodes/code/var-get";
 import type { NSVarSetNode } from "./nodes/code/var-set";
+import type { NSUIInputNode } from "./nodes/ui/input";
+import type { NSUIViewNode } from "./nodes/ui/paragraph";
+import type { NSUITextNode } from "./nodes/ui/text";
+import type { NSUIWidgetNode } from "./nodes/ui/widget";
 
 const rtrn = (value: NSNode): NSReturnNode => ({ _nstype: "return", value });
 
@@ -33,9 +37,46 @@ const cond = (condition: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 		inputs,
 		instructions
 	}),
+	uiInput = (id: NSNode): NSUIInputNode => ({
+		_nstype: "ui-input",
+		id
+	}),
+	uiText = (text: NSNode): NSUITextNode => ({
+		_nstype: "ui-text",
+		text
+	}),
+	uiParagraph = (items: NSNode): NSUIViewNode => ({
+		_nstype: "ui-prgh",
+		items
+	}),
+	uiWidget = (id: NSNode, args: NSNode): NSUIWidgetNode => ({
+		_nstype: "ui-widget",
+		id,
+		args
+	}),
 	fnCreateNRun = (instructions: NSNode): NSFunctionRunNode => fnRun(fnCreate([], instructions), []),
 	fnGetNRun = (id: string, args: NSNode): NSFunctionRunNode => fnRun(varGet(id), args),
 	fnSet = (id: NSNode, inputs: NSNode, instructions: NSNode): NSVarSetNode =>
 		varSet(id, fnCreate(inputs, instructions));
 
-export const $ns = { rtrn, cond, varSet, varGet, fnRun, fnCreateNRun, fnGetNRun, fnCreate, fnSet };
+export const $ns = {
+	rtrn,
+	cond,
+	var: {
+		set: varSet,
+		get: varGet
+	},
+	fn: {
+		run: fnRun,
+		createNRun: fnCreateNRun,
+		getNRun: fnGetNRun,
+		create: fnCreate,
+		set: fnSet
+	},
+	ui: {
+		input: uiInput,
+		text: uiText,
+		prgh: uiParagraph,
+		widget: uiWidget
+	}
+};

@@ -85,6 +85,7 @@ const subsetHelperTestCases = [
 			[false, z.boolean()],
 			[false, z.union([z.literal("a"), z.literal("b")])],
 			[false, false],
+			[false, true],
 			[false, { value: "str", type: "literal" }]
 		]
 	},

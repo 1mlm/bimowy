@@ -1,7 +1,7 @@
 import { NSRuntimeContext } from "./context/runtime";
 import { NSError } from "./error";
 import { NSComplexCodeNodesData, NSMinimumComplexNodeSchema, NSSimpleCodeNodesData } from "./nodes";
-import { basicFunctionRegistry } from "./nodes/code/fn-basic";
+import { basicFunctionRegistry } from "./nodes/code/fn-run.registry";
 
 function createDefaultRuntimeContext(): NSRuntimeContext {
 	const ctx = new NSRuntimeContext();
