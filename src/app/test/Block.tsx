@@ -1,11 +1,4 @@
-import { useDraggable } from "@dnd-kit/react";
-import { useLayoutEffect, useRef, useState } from "react";
-
-const RL = 0.3; // Left Radius
-const RB = 0.1; // Bump & Hole radius
-const O = 0.4; // Bump & Hole offset from corner
-const RR = 0.6; // Right Radius
-const BW = 0.3; // Bump/Hole width
+import { useLayoutEffect, useRef } from "react";
 
 const colors = {
 	red: "bg-red-500",
@@ -17,87 +10,141 @@ const colors = {
 
 export type BlockProps = {
 	id: string;
-	items: BlockItem[];
+	text: string;
 	color: keyof typeof colors;
+	children?: BlockProps[];
 };
 
-type BlockItem = { type: "text"; text: string } | { type: "number-input" };
-
-export function Block({ items, color, id }: BlockProps) {
-	const refClip = useRef<HTMLDivElement>(null);
-	const { ref: refDrag } = useDraggable({ id });
-	const [isClipped, setIsClipped] = useState(false);
+export function Block({ data }: { data: BlockProps }) {
+	const blockRef = useRef<HTMLDivElement>(null);
+	const blockTextRef = useRef<HTMLDivElement>(null);
 
 	function remToPx(rem: number) {
 		return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 	}
+	const IS_PARENT = data.children && data.children.length > 0;
 
 	useLayoutEffect(() => {
-		const el = refClip.current;
+		const el = blockRef.current;
+		const el2 = blockTextRef.current;
 		if (!el) return;
-		const { width: w, height: h } = el.getBoundingClientRect();
-		const [rl, rb, o, rr, bw] = [RL, RB, O, RR, BW].map(remToPx);
+		if (!el2) return;
+		const {
+			width: tw, // Text Width
+			height: th // Text Height
+		} = el2.getBoundingClientRect();
 
-		const path = `
-				M 0,${rl + rb * 2}
+		const r = remToPx(0.5), // Main Radius
+			br = remToPx(0.1), // Bump & Hole radius
+			o = remToPx(0.4), // Bump & Hole offset from corner
+			bw = remToPx(0.3), // Bump/Hole width
+			pw = remToPx(IS_PARENT ? 0.7 : 0); // Parent with
 
-        q 0,${-rl} ${rl},${-rl}
-        l ${o},0
-        q ${rb},0 ${rb},${-rb}
-				q 0,${-rb} ${rb},${-rb}
-        l ${bw},0
-				q ${rb},0 ${rb},${rb}
-				q 0,${rb} ${rb},${rb}
+		const paddingX = r;
+		const paddingTop = r;
+		const paddingBottom = r;
 
-        L ${w - rr},${rb * 2}
-        
-        q ${rr},0 ${rr},${rr}
-        
-        L ${w},${h - rr}
-        q 0,${rr} ${-rr},${rr}
+		const w = tw + paddingX * 2; // Total width
+		const h = th + paddingTop + paddingBottom; // Total height
 
-        L ${rb + rb + bw + rb + rb + o + rl},${h}
-        q ${-rb},0 ${-rb},${-rb}
-        q 0,${-rb} ${-rb},${-rb}
-        l ${-bw},0
-        q ${-rb},0 ${-rb},${rb}
-        q 0,${rb} ${-rb},${rb}
-        l ${-o},0
-        q ${-rl},0 ${-rl},${-rl}
+		const bumpPath = [
+			`q ${br},0 ${br},${-br}`,
+			`q 0,${-br} ${br},${-br}`,
 
-        Z
-      `.replace(/\s+/g, " ");
+			`l ${bw},0`,
 
+			`q ${br},0 ${br},${br}`,
+			`q 0,${br} ${br},${br}`
+		];
+
+		const bumpPath2 = [
+			`q ${-br},0 ${-br},${-br}`,
+			`q 0,${-br} ${-br},${-br}`,
+			`l ${-bw},0`,
+			`q ${-br},0 ${-br},${br}`,
+			`q 0,${br} ${-br},${br}`
+		];
+		const path = [
+			// Just before the first top left radius
+			`M 0,${r + br * 2}`,
+
+			// Top left radius
+			`q 0,${-r} ${r},${-r}`,
+
+			`l ${o},0`,
+
+			// Top bump
+			...bumpPath,
+
+			// Just before top right radius
+			`L ${w - r},${br * 2}`,
+
+			`q ${r},0 ${r},${r}`,
+
+			// Just before bottom right radius
+			`L ${w},${h - r}`,
+
+			`q 0,${r} ${-r},${r}`,
+
+			// Bottom middle-left (before hole)
+			`L ${pw + r + o + br * 4 + bw},${h}`,
+
+			...bumpPath2,
+			// Hole
+			...(!IS_PARENT
+				? [
+						// Teleport to bottom left (after bump, before radius) & do radius
+						`L ${r},${h}`
+					]
+				: [
+						// Go left
+						`l ${-o},0`,
+						`q ${-r},0 ${-r},${r}`,
+
+						// Go down
+						`l 0,${th}`,
+						`q 0,${r} ${r},${r}`,
+
+						// Go right
+						`l ${o},0`,
+						...bumpPath,
+						`L ${w - r},${h + r + th + r}`,
+						`q ${r},0 ${r},${r}`,
+
+						// Go downleft
+						`q 0,${r} ${-r},${r}`,
+
+						`L ${r + br * 4 + bw + o},${h + th + r + r + r + r}`,
+						...bumpPath2,
+						`L ${r},${h + th + r * 4}`
+					]),
+			`q ${-r},0 ${-r},${-r}`,
+			`Z`
+		]
+			.join("\n")
+			.replace(/\s+/g, " ");
+
+		el.style.paddingLeft = `${paddingX}px`;
+		el.style.paddingRight = `${paddingX}px`;
+		el.style.paddingTop = `${paddingTop}px`;
+		el.style.paddingBottom = `${paddingBottom}px`;
 		el.style.clipPath = `path("${path}")`;
-		setIsClipped(true);
 	}, []);
 
 	return (
 		<div
 			ref={(element) => {
-				refClip.current = element;
-				refDrag(element);
+				blockRef.current = element;
 			}}
 			className={`
-				${isClipped ? "opacity-100" : "opacity-0"}
 				relative w-fit select-none cursor-pointer
-        pl-1.5 py-2 p-2.5 leading-4
-				inline-flex gap-1 items-center
-        text-white ${colors[color]}
-				transition-transform duration-75 hover:scale-105`}
+        text-white ${colors[data.color]}
+				duration-75 hover:translate-x-1
+				${IS_PARENT && "h-72"}`}
 		>
-			{items.map((item, i) =>
-				item.type === "text" ? (
-					item.text
-				) : (
-					<input
-						key={i}
-						className={`size-5 bg-background rounded-sm
-							focus:border-red-500/50 focus:outline-none
-						flex place-items-center`}
-					/>
-				)
-			)}
+			<div ref={blockTextRef} className="leading-3.5">
+				{data.text}
+			</div>
 		</div>
 	);
 }
