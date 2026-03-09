@@ -1,5 +1,6 @@
 import { useDraggable } from "@dnd-kit/react";
 import { useRef } from "react";
+import { useClipLayoutEffect } from "./useClipLayoutEffect";
 
 const colors = {
 	red: "bg-red-500",
@@ -22,7 +23,7 @@ export function Block({ data }: { data: BlockProps }) {
 		{ ref: dragRef } = useDraggable({ id: data.id }),
 		isParent = data.children !== undefined;
 
-	// useClipLayoutEffect(blockRef, blockTextRef, isParent);
+	useClipLayoutEffect(blockRef, blockTextRef, isParent);
 
 	return (
 		<div
