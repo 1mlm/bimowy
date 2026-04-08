@@ -3,28 +3,56 @@
 import { Block, type BlockProps } from "./Block";
 
 const blocks: BlockProps[] = [
-	{ id: "attack", color: "red", text: "Attack" },
-	{ id: "turn-r", color: "purple", text: "Turn right" },
+	{ id: "attack", color: "red", text: "Delete folder" },
+	{ id: "turn-r", color: "purple", text: "Start screen recording" },
 	{
 		id: "walk",
 		color: "blue",
-		text: "Walk 10 pixels"
+		text: "Open file"
 	},
 	{
 		id: "repeat",
 		color: "yellow",
-		text: "Repeat 3 times",
+		text: "Repeat 5 times",
 		children: []
 	},
-	// {
-	// 	id: "if",
-	// 	color: "green",
-	// 	text: "Forever",
-	// 	children: [
-	// 		{ id: "cheer", color: "yellow", text: "Cheer" },
-	// 		{ id: "turn-l", color: "purple", text: "Turn left" }
-	// 	]
-	// }
+	{
+		id: "if",
+		color: "green",
+		text: "if 1 + 1 == 2",
+		childrenGroups: [
+			{
+				id: "yes",
+				children: [
+					{
+						id: "print",
+						color: "blue",
+						text: "Scream \"Math works!\""
+					},
+					{
+						id: "thx",
+						color: "blue",
+						text: "Be thankful"
+					}
+				]
+			},
+			{
+				id: "no",
+				children: [
+					{
+						id: "wtf",
+						color: "red",
+						text: "Question reality"
+					},
+					{
+						id: "wtf2",
+						color: "red",
+						text: "Question the concept of existence"
+					}
+				]
+			}
+		]
+	}
 ];
 
 export default function TestPage() {

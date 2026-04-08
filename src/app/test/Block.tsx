@@ -1,57 +1,78 @@
-import { type PropsWithChildren, useRef } from "react";
-import { bgClassNames, R, Rpx } from "./const";
+import type { PropsWithChildren } from "react";
+import { R, variants } from "./const";
 
 export type BlockProps = PropsWithChildren & {
 	id: string;
 	text: string;
-	color: keyof typeof bgClassNames;
+	color: keyof typeof variants;
+	childrenGroups?: { id: string; children: BlockProps[] }[];
 };
 
 export function Block(data: BlockProps) {
-	const topPart = useRef<HTMLDivElement>(null),
-		bottomPart = useRef<HTMLDivElement>(null),
-		leftPart = useRef<HTMLDivElement>(null);
+	const { bgClass } = variants[data.color];
+	const isParent = !!data.childrenGroups?.length;
 
-	const bg = bgClassNames[data.color];
 	return (
-		<div className={`w-fit p-1 flex flex-col **:leading-4`}>
+		<div
+			className={`w-fit flex flex-col **:leading-4
+		duration-75 cursor-pointer hover:translate-x-1`}
+		>
 			{/* ⬜ Top Part */}
 			<div
-				ref={topPart}
-				className={`${bg} px-2 py-1 w-fit`}
-				style={{ borderRadius: `${R}rem ${R}rem ${R}rem 0` }}
+				className={`${bgClass} flex items-center justify-center h-6 px-2 select-none text-nowrap`}
+				style={{ borderRadius: [R,R,R,isParent ? 0 : R].map((r) => `${r}rem`).join(' ') }}
 			>
 				{data.text}
 			</div>
-			{/* Middle Part */}
-			<div className="flex">
-				{/* ⬜ Left Part */}
-				<div ref={leftPart} className={`${bg} w-2`} />
-				{/* ⬜ Top & Bottom absolute nubs */}
-				<div className="relative">
-					{[
-						{ pos: "top-0", path: `M ${Rpx},0 Q0,0 0,${Rpx} L0,0 Z` },
-						{ pos: "bottom-0", path: `M 0,0 Q 0,${Rpx} ${Rpx},${Rpx} L 0,${Rpx} Z` }
-					].map(({ pos, path }) => (
-						<BlockNub
-							key={pos}
-							className={`absolute left-0 ${pos} ${bg}`}
-							clipPath={`path("${path}")`}
-							{...{ size: Rpx }}
+			{data.childrenGroups?.map((grp, i, arr) => {
+				const isLastChildrenGroup = i === arr.length - 1;
+				return (
+					<div key={grp.id}>
+						{/* Middle Part */}
+						<div className="flex">
+							{/* ⬜ Left Part */}
+							<div className={`${bgClass} w-2`} />
+							<div className="relative">
+								<BlockNubs {...{ bgClass }} />
+								{/* Children */}
+								<div className="w-0 overflow-x-visible">
+									{grp.children.map((child) => (
+										<Block key={child.id} {...child} />
+									))}
+								</div>
+							</div>
+						</div>
+
+						{/* ⬜ Bottom Part */}
+						<div
+							className={`${bgClass} w-11/12 h-3`}
+							style={{ borderRadius: [0,R,R,isLastChildrenGroup ? R : 0].map((r) => `${r}rem`).join(' ') }}
 						/>
-					))}
-					{/* Children */}
-					<div className="w-0 overflow-x-visible size-5"></div>
-				</div>
-			</div>
-			{/* ⬜ Bottom Part */}
-			<div
-				ref={bottomPart}
-				className={`${bg} w-full h-3`}
-				style={{ borderRadius: `0 ${R}rem ${R}rem ${R}rem` }}
-			/>
+					</div>
+				);
+			})}
 		</div>
 	);
+}
+
+const Rpx = remToPx(R);
+
+function remToPx(rem: number) {
+	return rem * 19; // Assuming the root font size is 16px
+}
+
+function BlockNubs({ bgClass }: { bgClass: string }) {
+	return [
+		{ pos: "top-0", path: `M${Rpx},0 Q0,0 0,${Rpx} L0,0 Z` },
+		{ pos: "bottom-0", path: `M0,0 Q0,${Rpx} ${Rpx},${Rpx} L0,${Rpx} Z` }
+	].map(({ pos, path }) => (
+		<BlockNub
+			key={pos}
+			className={`absolute left-0 ${pos} ${bgClass}`}
+			clipPath={`path("${path}")`}
+			{...{ size: Rpx }}
+		/>
+	));
 }
 
 function BlockNub({
