@@ -1,45 +1,67 @@
-import { useDraggable } from "@dnd-kit/react";
-import { useRef } from "react";
-import { useClipLayoutEffect } from "./useClipLayoutEffect";
+import { type PropsWithChildren, useRef } from "react";
+import { bgClassNames, R, Rpx } from "./const";
 
-const colors = {
-	red: "bg-red-500",
-	blue: "bg-blue-500",
-	yellow: "bg-amber-600",
-	green: "bg-green-600",
-	purple: "bg-purple-600"
-};
-
-export type BlockProps = {
+export type BlockProps = PropsWithChildren & {
 	id: string;
 	text: string;
-	color: keyof typeof colors;
-	children?: BlockProps[];
+	color: keyof typeof bgClassNames;
 };
 
-export function Block({ data }: { data: BlockProps }) {
-	const blockRef = useRef<HTMLDivElement>(null),
-		blockTextRef = useRef<HTMLDivElement>(null),
-		{ ref: dragRef } = useDraggable({ id: data.id }),
-		isParent = data.children !== undefined;
+export function Block(data: BlockProps) {
+	const topPart = useRef<HTMLDivElement>(null),
+		bottomPart = useRef<HTMLDivElement>(null),
+		leftPart = useRef<HTMLDivElement>(null);
 
-	useClipLayoutEffect(blockRef, blockTextRef, isParent);
-
+	const bg = bgClassNames[data.color];
 	return (
-		<div
-			ref={(element) => {
-				blockRef.current = element;
-				dragRef(element);
-			}}
-			className={`
-				relative w-fit select-none cursor-pointer
-        text-white ${colors[data.color]}
-				duration-75 hover:translate-x-1
-				${isParent && "h-20"}`}
-		>
-			<div ref={blockTextRef} className="leading-3.5">
+		<div className={`w-fit p-1 flex flex-col **:leading-4`}>
+			{/* ⬜ Top Part */}
+			<div
+				ref={topPart}
+				className={`${bg} px-2 py-1 w-fit`}
+				style={{ borderRadius: `${R}rem ${R}rem ${R}rem 0` }}
+			>
 				{data.text}
 			</div>
+			{/* Middle Part */}
+			<div className="flex">
+				{/* ⬜ Left Part */}
+				<div ref={leftPart} className={`${bg} w-2`} />
+				{/* ⬜ Top & Bottom absolute nubs */}
+				<div className="relative">
+					{[
+						{ pos: "top-0", path: `M ${Rpx},0 Q0,0 0,${Rpx} L0,0 Z` },
+						{ pos: "bottom-0", path: `M 0,0 Q 0,${Rpx} ${Rpx},${Rpx} L 0,${Rpx} Z` }
+					].map(({ pos, path }) => (
+						<BlockNub
+							key={pos}
+							className={`absolute left-0 ${pos} ${bg}`}
+							clipPath={`path("${path}")`}
+							{...{ size: Rpx }}
+						/>
+					))}
+					{/* Children */}
+					<div className="w-0 overflow-x-visible size-5"></div>
+				</div>
+			</div>
+			{/* ⬜ Bottom Part */}
+			<div
+				ref={bottomPart}
+				className={`${bg} w-full h-3`}
+				style={{ borderRadius: `0 ${R}rem ${R}rem ${R}rem` }}
+			/>
 		</div>
 	);
+}
+
+function BlockNub({
+	clipPath,
+	className,
+	size
+}: {
+	clipPath: string;
+	className: string;
+	size: number;
+}) {
+	return <div {...{ className }} style={{ width: size, height: size, clipPath }} />;
 }

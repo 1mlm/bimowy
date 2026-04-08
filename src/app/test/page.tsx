@@ -16,22 +16,22 @@ const blocks: BlockProps[] = [
 		text: "Repeat 3 times",
 		children: []
 	},
-	{
-		id: "if",
-		color: "green",
-		text: "Forever",
-		children: [
-			{ id: "cheer", color: "yellow", text: "Cheer" },
-			{ id: "turn-l", color: "purple", text: "Turn left" }
-		]
-	}
+	// {
+	// 	id: "if",
+	// 	color: "green",
+	// 	text: "Forever",
+	// 	children: [
+	// 		{ id: "cheer", color: "yellow", text: "Cheer" },
+	// 		{ id: "turn-l", color: "purple", text: "Turn left" }
+	// 	]
+	// }
 ];
 
 export default function TestPage() {
 	return (
 		<div className="p-4 flex flex-col gap-1">
 			{blocks.map((data) => (
-				<Block key={data.id} {...{ data }} />
+				<Block key={data.id} {...data} />
 			))}
 		</div>
 	);
