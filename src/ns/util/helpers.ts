@@ -39,7 +39,7 @@ const cond = (condition: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 		fn,
 		args
 	}),
-	fnCreate = (inputs: NSNode, instructions: NSNode): NSFunctionNode => ({
+	fnNew = (inputs: NSNode, instructions: NSNode): NSFunctionNode => ({
 		_nstype: "fn-create",
 		inputs,
 		instructions
@@ -61,14 +61,15 @@ const cond = (condition: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 		id,
 		args
 	}),
-	newobj = (props: Record<string, NSNode>): NSObjectNode => ({
+	newObj = (props: Record<string, NSNode>): NSObjectNode => ({
 		_nstype: "object",
 		props
 	}),
-	fnCreateNRun = (instructions: NSNode): NSFunctionRunNode => fnRun(fnCreate([], instructions), []),
+	fnNewNReturn = (value: NSNode): NSFunctionNode => fnNew([], [rtrn(value)]),
+	fnNewNRun = (instructions: NSNode): NSFunctionRunNode => fnRun(fnNew([], instructions), []),
 	fnGetNRun = (id: string, args: NSNode): NSFunctionRunNode => fnRun(varGet(id), args),
 	fnSet = (id: NSNode, inputs: NSNode, instructions: NSNode): NSVarSetNode =>
-		varSet(id, fnCreate(inputs, instructions));
+		varSet(id, fnNew(inputs, instructions));
 
 export const $ns = {
 	rtrn,
@@ -79,14 +80,15 @@ export const $ns = {
 	},
 	fn: {
 		run: fnRun,
-		createNRun: fnCreateNRun,
+		newNReturn: fnNewNReturn,
+		newNRun: fnNewNRun,
 		getNRun: fnGetNRun,
-		create: fnCreate,
+		new: fnNew,
 		set: fnSet
 	},
 	obj: {
 		getField,
-		new: newobj
+		new: newObj
 	},
 	ui: {
 		input: uiInput,

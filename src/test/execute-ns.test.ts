@@ -57,15 +57,14 @@ const executeTestCases = [
 		items: [
 			{
 				expected: 42,
-				actual: () =>
-					executeNS($ns.fn.run($ns.fn.create(["x"], [$ns.rtrn($ns.var.get("x"))]), [42]))
+				actual: () => executeNS($ns.fn.run($ns.fn.new(["x"], [$ns.rtrn($ns.var.get("x"))]), [42]))
 			},
 			{
 				expected: 11,
 				actual: () =>
 					executeNS(
 						$ns.fn.run(
-							$ns.fn.create(
+							$ns.fn.new(
 								["a", "b"],
 								[$ns.rtrn($ns.fn.getNRun("op", ["+", $ns.var.get("a"), $ns.var.get("b")]))]
 							),
@@ -124,7 +123,7 @@ const executeTestCases = [
 				actual: () =>
 					executeNS(
 						$ns.fn.run(
-							$ns.fn.create(
+							$ns.fn.new(
 								["base"],
 								[
 									$ns.var.set("x", $ns.var.get("base")),
@@ -135,7 +134,7 @@ const executeTestCases = [
 											$ns.ui.text("B:"),
 											$ns.ui.text(
 												$ns.fn.run(
-													$ns.fn.create(
+													$ns.fn.new(
 														["n"],
 														[
 															$ns.rtrn(
@@ -165,7 +164,7 @@ const executeTestCases = [
 		items: [
 			{
 				actual: () =>
-					executeNS($ns.fn.run($ns.fn.create(["a", "b"], [$ns.rtrn($ns.var.get("a"))]), [5])),
+					executeNS($ns.fn.run($ns.fn.new(["a", "b"], [$ns.rtrn($ns.var.get("a"))]), [5])),
 				shouldThrow: true
 			},
 			{
@@ -185,12 +184,12 @@ const executeTestCases = [
 			},
 			{
 				name: "throws when custom function input names are not strings",
-				actual: () => executeNS($ns.fn.run($ns.fn.create([1], [$ns.rtrn(1)]), [7])),
+				actual: () => executeNS($ns.fn.run($ns.fn.new([1], [$ns.rtrn(1)]), [7])),
 				shouldThrow: true
 			},
 			{
 				name: "throws when custom function instructions are not an array",
-				actual: () => executeNS($ns.fn.run($ns.fn.create(["x"], $ns.rtrn($ns.var.get("x"))), [7])),
+				actual: () => executeNS($ns.fn.run($ns.fn.new(["x"], $ns.rtrn($ns.var.get("x"))), [7])),
 				shouldThrow: true
 			}
 		]

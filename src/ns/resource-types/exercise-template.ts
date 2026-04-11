@@ -1,26 +1,32 @@
-import { isDeepStrictEqual } from "util";
+import { isDeepStrictEqual } from "node:util";
 import z from "zod";
 import { NSRuntimeContext } from "../context/runtime";
 import { executeNS } from "../execute";
 import { NSNodeSchema } from "../nodes";
+import { NSFunctionNodeData } from "../nodes/code/fn-create";
+import { $ns } from "../util/helpers";
 import { NSResource } from ".";
 
-const ExerciseTemplateResourceDataSchema = z
-	.object({
-		exampleSeed: z.unknown(),
-		exampleAnswer: z.number(),
-		seedGeneratorPlan: NSNodeSchema,
-		uiPlan: z.array(NSNodeSchema),
-		solutionPlan: NSNodeSchema.optional(),
-		correctionPlan: NSNodeSchema.optional()
+export const SEED_VAR = "_seed";
+export const ANSWER_VAR = "_answer";
+
+const ExerciseTemplateResourceDataBaseSchema = z.object({
+	exampleSeed: z.unknown(),
+	exampleAnswer: z.number(),
+	seedGeneratorPlan: NSFunctionNodeData.schema,
+	uiPlan: z.array(NSNodeSchema)
+});
+
+const ExerciseTemplateResourceDataSchema = z.union([
+	ExerciseTemplateResourceDataBaseSchema.extend({
+		solutionPlan: NSFunctionNodeData.schema,
+		correctionPlan: NSFunctionNodeData.schema.optional()
+	}),
+	ExerciseTemplateResourceDataBaseSchema.extend({
+		solutionPlan: NSFunctionNodeData.schema.optional(),
+		correctionPlan: NSFunctionNodeData.schema
 	})
-	.refine(
-		(data) =>
-			typeof data.solutionPlan !== "undefined" || typeof data.correctionPlan !== "undefined",
-		{
-			message: "Exercise template needs at least one of solutionPlan or correctionPlan"
-		}
-	);
+]);
 
 export const ExerciseTemplateResource = NSResource.extend({
 	type: z.literal("exercise-template"),
@@ -31,12 +37,12 @@ export type ExerciseTemplateResource = z.infer<typeof ExerciseTemplateResource>;
 
 function createSeededRuntimeContext(seed: unknown) {
 	const ctx = new NSRuntimeContext();
-	ctx.setVar("_seed", seed);
+	ctx.setVar(SEED_VAR, seed);
 	return ctx;
 }
 
 export function generateSeed(resource: ExerciseTemplateResource) {
-	return executeNS(resource.data.seedGeneratorPlan);
+	return executeNS($ns.fn.run(resource.data.seedGeneratorPlan, []));
 }
 
 export function generateUI(resource: ExerciseTemplateResource, seed: unknown) {
@@ -45,27 +51,24 @@ export function generateUI(resource: ExerciseTemplateResource, seed: unknown) {
 }
 
 export function generateSolution(resource: ExerciseTemplateResource, seed: unknown) {
-	if (typeof resource.data.solutionPlan === "undefined") {
+	if (!resource.data.solutionPlan)
 		throw new Error("Cannot generate solution from a correction-plan template");
-	}
 	const seedCtx = createSeededRuntimeContext(seed);
-	return executeNS(resource.data.solutionPlan, seedCtx);
+	return executeNS($ns.fn.run(resource.data.solutionPlan, []), seedCtx);
 }
 
 export function correct(resource: ExerciseTemplateResource, seed: unknown, answer: unknown) {
 	const ctx = createSeededRuntimeContext(seed);
-	ctx.setVar("_answer", answer);
-	ctx.setVar("_input", answer);
+	ctx.setVar(ANSWER_VAR, answer);
 
-	if (typeof resource.data.correctionPlan !== "undefined") {
-		const correctionResult = executeNS(resource.data.correctionPlan, ctx);
+	if (resource.data.correctionPlan) {
+		const correctionResult = executeNS($ns.fn.run(resource.data.correctionPlan, []), ctx);
 		if (typeof correctionResult === "boolean") return correctionResult;
 		return isDeepStrictEqual(correctionResult, answer);
 	}
 
-	if (typeof resource.data.solutionPlan !== "undefined") {
+	if (resource.data.solutionPlan)
 		return isDeepStrictEqual(generateSolution(resource, seed), answer);
-	}
 
 	throw new Error("Template has neither solutionPlan nor correctionPlan");
 }
