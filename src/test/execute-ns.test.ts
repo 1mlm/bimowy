@@ -1,5 +1,5 @@
 import { executeNS } from "@/ns/execute";
-import { $ns } from "@/ns/helpers";
+import { $ns } from "@/ns/util/helpers";
 import { $group, type TestItem } from "./index.test";
 
 const executeTestCases = [

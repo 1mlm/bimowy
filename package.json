@@ -9,19 +9,13 @@
 		"dev": "next dev --turbopack -p 3003",
 		"build": "npm run db;next build",
 		"start": "next start",
-
 		"format": "biome format --write",
-
 		"check": "tsc --noEmit",
-
 		"db": "prisma migrate dev --name cmd && prisma generate",
-
 		"play": "tsx src/playground",
 		"play:w": "tsx watch src/playground",
-
 		"test": "tsx src/test/index.test.ts",
 		"test:w": "tsx watch src/test/index.test.ts",
-
 		"all": "npm run format && npm run check && npm run test"
 	},
 	"dependencies": {
@@ -36,6 +30,7 @@
 		"@radix-ui/react-tooltip": "^1.2.8",
 		"@react-three/drei": "^10.7.7",
 		"@react-three/fiber": "^9.5.0",
+		"@toolwind/corner-shape": "^0.0.8-3",
 		"@types/three": "^0.183.1",
 		"@vercel/analytics": "^1.6.1",
 		"@vercel/speed-insights": "^1.3.1",

@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from "react";
+import { cn } from "@/shadcn/utils";
 import { R, variants } from "./const";
 
 export type BlockProps = PropsWithChildren & {
@@ -63,26 +64,23 @@ function remToPx(rem: number) {
 
 function BlockNubs({ bgClass }: { bgClass: string }) {
 	return [
-		{ pos: "top-0", path: `M${Rpx},0 Q0,0 0,${Rpx} L0,0 Z` },
-		{ pos: "bottom-0", path: `M0,0 Q0,${Rpx} ${Rpx},${Rpx} L0,${Rpx} Z` }
-	].map(({ pos, path }) => (
+		{ pos: "top-0", className: "corner-br-scoop -translate-y-1/2", },
+		{ pos: "bottom-0", className: "corner-tr-scoop translate-y-1/2" }
+	].map(({ pos, className }) => (
 		<BlockNub
 			key={pos}
-			className={`absolute left-0 ${pos} ${bgClass}`}
-			clipPath={`path("${path}")`}
-			{...{ size: Rpx }}
+			className={cn(`absolute left-0 -translate-x-1/2  rounded-full`, pos, bgClass, className)}
+			{...{ size: Rpx*2 }}
 		/>
 	));
 }
 
 function BlockNub({
-	clipPath,
 	className,
 	size
 }: {
-	clipPath: string;
 	className: string;
 	size: number;
 }) {
-	return <div {...{ className }} style={{ width: size, height: size, clipPath }} />;
+	return <div {...{ className }} style={{ width: size, height: size }} />;
 }

@@ -1,17 +1,11 @@
 import { NSRuntimeContext } from "./context/runtime";
 import { NSError } from "./error";
 import { NSComplexCodeNodesData, NSMinimumComplexNodeSchema, NSSimpleCodeNodesData } from "./nodes";
-import { basicFunctionRegistry } from "./nodes/code/fn-run.registry";
 
-function createDefaultRuntimeContext(): NSRuntimeContext {
-	const ctx = new NSRuntimeContext();
-	for (const fn of basicFunctionRegistry) {
-		ctx.setVar(fn.id, fn);
-	}
-	return ctx;
-}
-
-export function executeNS(node: unknown, ctx = createDefaultRuntimeContext()): unknown {
+export function executeNS(
+	node: unknown,
+	ctx= new NSRuntimeContext()
+): unknown {
 	for (const simpleParser of NSSimpleCodeNodesData) {
 		const parsedNode = simpleParser.schema.safeParse(node);
 		if (!parsedNode.success) continue;

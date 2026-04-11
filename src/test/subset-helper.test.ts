@@ -11,7 +11,7 @@ import {
 	isStringSchema,
 	isUnionSchema,
 	isWhateverSchema
-} from "@/ns/subset.util";
+} from "@/ns/util/subset.util";
 import { $group } from "./index.test";
 
 const subsetHelperTestCases = [

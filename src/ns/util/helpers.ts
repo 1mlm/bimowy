@@ -1,14 +1,16 @@
-import type { NSNode } from "./nodes";
-import type { NSFunctionNode } from "./nodes/code/fn-create";
-import type { NSFunctionRunNode } from "./nodes/code/fn-run";
-import type { NSIfNode } from "./nodes/code/if";
-import type { NSReturnNode } from "./nodes/code/return";
-import type { NSVarGetNode } from "./nodes/code/var-get";
-import type { NSVarSetNode } from "./nodes/code/var-set";
-import type { NSUIInputNode } from "./nodes/ui/input";
-import type { NSUIViewNode } from "./nodes/ui/paragraph";
-import type { NSUITextNode } from "./nodes/ui/text";
-import type { NSUIWidgetNode } from "./nodes/ui/widget";
+import type { NSNode } from "../nodes";
+import type { NSFunctionNode } from "../nodes/code/fn-create";
+import type { NSFunctionRunNode } from "../nodes/code/fn-run";
+import type { NSGetFieldNode } from "../nodes/code/get-field";
+import type { NSIfNode } from "../nodes/code/if";
+import type { NSObjectNode } from "../nodes/code/object";
+import type { NSReturnNode } from "../nodes/code/return";
+import type { NSVarGetNode } from "../nodes/code/var-get";
+import type { NSVarSetNode } from "../nodes/code/var-set";
+import type { NSUIInputNode } from "../nodes/ui/input";
+import type { NSUIViewNode } from "../nodes/ui/paragraph";
+import type { NSUITextNode } from "../nodes/ui/text";
+import type { NSUIWidgetNode } from "../nodes/ui/widget";
 
 const rtrn = (value: NSNode): NSReturnNode => ({ _nstype: "return", value });
 
@@ -26,6 +28,11 @@ const cond = (condition: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 	varGet = (id: NSNode): NSVarGetNode => ({
 		_nstype: "var-get",
 		id
+	}),
+	getField = (object: NSNode, field: NSNode): NSGetFieldNode => ({
+		_nstype: "get-field",
+		object,
+		field
 	}),
 	fnRun = (fn: NSNode, args: NSNode): NSFunctionRunNode => ({
 		_nstype: "fn-run",
@@ -54,6 +61,10 @@ const cond = (condition: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 		id,
 		args
 	}),
+	newobj = (props: Record<string, NSNode>): NSObjectNode => ({
+		_nstype: "object",
+		props
+	}),
 	fnCreateNRun = (instructions: NSNode): NSFunctionRunNode => fnRun(fnCreate([], instructions), []),
 	fnGetNRun = (id: string, args: NSNode): NSFunctionRunNode => fnRun(varGet(id), args),
 	fnSet = (id: NSNode, inputs: NSNode, instructions: NSNode): NSVarSetNode =>
@@ -72,6 +83,10 @@ export const $ns = {
 		getNRun: fnGetNRun,
 		create: fnCreate,
 		set: fnSet
+	},
+	obj: {
+		getField,
+		new: newobj
 	},
 	ui: {
 		input: uiInput,

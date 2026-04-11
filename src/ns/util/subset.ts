@@ -1,5 +1,5 @@
 import type { ZodType } from "zod";
-import { NSError } from "./error";
+import { NSError } from "../error";
 import {
 	getIntersectionSchemas,
 	getUnionSchemas,

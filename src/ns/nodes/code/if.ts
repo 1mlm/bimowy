@@ -1,7 +1,7 @@
 import z from "zod";
+import { simplifySchema } from "@/ns/context/simplify-schema";
 import { executeNS } from "@/ns/execute";
 import { scanNS } from "@/ns/scan";
-import { simplifySchema } from "@/ns/simplify-schema";
 import { assertIsBoolean, assertIsBooleanSchema, createComplexNodeParser } from "../util";
 
 export const NSIfNodeData = createComplexNodeParser({

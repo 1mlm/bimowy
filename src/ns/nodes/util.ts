@@ -4,7 +4,7 @@ import type { NSNodeID } from "@/ns/nodes";
 import type { NSScan } from "@/ns/scan";
 import type { NSRuntimeContext } from "../context/runtime";
 import type { ScantimeContext } from "../context/scantime";
-import { isSchemaSubset } from "../subset";
+import { isSchemaSubset } from "../util/subset";
 
 export function createSimpleNodeParser<Schema extends z.ZodType>({
 	schema,

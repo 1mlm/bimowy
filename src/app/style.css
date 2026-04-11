@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "tailwindcss";
+
 @source "@/app/test/page.tsx";
+@plugin "@toolwind/corner-shape";
 
 /* ----------------------------------------
    THEME TOKENS (Tailwind-compatible)

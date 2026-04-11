@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import test, { suite } from "node:test";
 import "./execute-ns.test";
+import "./exercise-template.test";
 import "./subset-helper.test";
 import "./subset.test";
 

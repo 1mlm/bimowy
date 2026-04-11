@@ -26,6 +26,17 @@ function $<In extends z.ZodArray | z.ZodTuple, Out extends z.ZodType>({
 	return { id, inputs, output, execute };
 }
 
+const randomFunction = $({
+	id: "random",
+	inputs: z.tuple([z.enum(["int", "float"]), z.number(), z.number()]),
+	output: z.number(),
+	execute: (type, min, max) => {
+		const randomFloat = Math.random() * (max - min + 1);
+		if (type === "int") return Math.floor(randomFloat) + min;
+		return randomFloat + min;
+	}
+});
+
 const basicOperationsExecuters = {
 	"+": (a, b) => a + b,
 	"-": (a, b) => a - b,
@@ -90,7 +101,7 @@ export const basicComparisonFunction = $({
 
 export const otherFunctions = [
 	$({
-		id: "concatTrim",
+		id: "concat",
 		inputs: z.array(z.union([z.string(), z.number()])),
 		output: z.string(),
 		execute: (...strs) => strs.map((str) => `${str}`.trim()).join(" ")
@@ -99,7 +110,12 @@ export const otherFunctions = [
 ] as const;
 
 export const basicFunctionRegistry = [
+	randomFunction,
 	basicOperationFunction,
 	basicComparisonFunction,
 	...otherFunctions
 ] as BasicFunction[];
+
+export function getBasicFunctionById(id: string): BasicFunction | undefined {
+	return basicFunctionRegistry.find((fn) => fn.id === id);
+}

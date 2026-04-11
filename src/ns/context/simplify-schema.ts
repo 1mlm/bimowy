@@ -5,7 +5,7 @@ import {
 	getUnionSchemas,
 	isIntersectionSchema,
 	isUnionSchema
-} from "./subset.util";
+} from "../util/subset.util";
 
 export function simplifySchema(schema: ZodType): ZodType {
 	if (isUnionSchema(schema)) {

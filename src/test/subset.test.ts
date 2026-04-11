@@ -1,5 +1,5 @@
 import z, { type ZodType } from "zod";
-import { isSchemaSubset } from "@/ns/subset";
+import { isSchemaSubset } from "@/ns/util/subset";
 import { $group } from "./index.test";
 
 const APPLE = z.literal("apple");
