@@ -7,8 +7,8 @@ import { NSFunctionNodeData } from "../nodes/code/fn-create";
 import { $ns } from "../util/helpers";
 import { NSResource } from ".";
 
-export const SEED_VAR = "_seed";
-export const ANSWER_VAR = "_answer";
+export const SEED_VAR_NAME = "_seed";
+export const ANSWER_VAR_NAME = "_answer";
 
 const ExerciseTemplateResourceDataBaseSchema = z.object({
 	exampleSeed: z.unknown(),
@@ -37,7 +37,7 @@ export type ExerciseTemplateResource = z.infer<typeof ExerciseTemplateResource>;
 
 function createSeededRuntimeContext(seed: unknown) {
 	const ctx = new NSRuntimeContext();
-	ctx.setVar(SEED_VAR, seed);
+	ctx.setVar(SEED_VAR_NAME, seed);
 	return ctx;
 }
 
@@ -59,7 +59,7 @@ export function generateSolution(resource: ExerciseTemplateResource, seed: unkno
 
 export function correct(resource: ExerciseTemplateResource, seed: unknown, answer: unknown) {
 	const ctx = createSeededRuntimeContext(seed);
-	ctx.setVar(ANSWER_VAR, answer);
+	ctx.setVar(ANSWER_VAR_NAME, answer);
 
 	if (resource.data.correctionPlan) {
 		const correctionResult = executeNS($ns.fn.run(resource.data.correctionPlan, []), ctx);

@@ -1,10 +1,10 @@
 import {
-	ANSWER_VAR,
+	ANSWER_VAR_NAME,
 	correct,
 	type ExerciseTemplateResource,
 	generateSeed,
 	generateSolution,
-	SEED_VAR
+	SEED_VAR_NAME
 } from "@/ns/resource-types/exercise-template";
 import { $ns } from "@/ns/util/helpers";
 import { $group, type TestItem } from "./index.test";
@@ -35,26 +35,26 @@ const operationsExerciseTest: ExerciseTemplateResource = {
 			$ns.ui.prgh([
 				"Compute",
 				$ns.cond(
-					$ns.fn.getNRun("compare", ["<", $ns.obj.getField($ns.var.get(SEED_VAR), 1), 0]),
-					$ns.fn.getNRun("concat", ["(", $ns.obj.getField($ns.var.get(SEED_VAR), 1), ")"]),
-					$ns.obj.getField($ns.var.get(SEED_VAR), 1)
+					$ns.fn.getNRun("compare", ["<", $ns.obj.getField($ns.var.get(SEED_VAR_NAME), 1), 0]),
+					$ns.fn.getNRun("concat", ["(", $ns.obj.getField($ns.var.get(SEED_VAR_NAME), 1), ")"]),
+					$ns.obj.getField($ns.var.get(SEED_VAR_NAME), 1)
 				),
-				$ns.obj.getField($ns.var.get(SEED_VAR), 0),
+				$ns.obj.getField($ns.var.get(SEED_VAR_NAME), 0),
 				$ns.cond(
-					$ns.fn.getNRun("compare", ["<", $ns.obj.getField($ns.var.get(SEED_VAR), 2), 0]),
-					$ns.fn.getNRun("concat", ["(", $ns.obj.getField($ns.var.get(SEED_VAR), 2), ")"]),
-					$ns.obj.getField($ns.var.get(SEED_VAR), 2)
+					$ns.fn.getNRun("compare", ["<", $ns.obj.getField($ns.var.get(SEED_VAR_NAME), 2), 0]),
+					$ns.fn.getNRun("concat", ["(", $ns.obj.getField($ns.var.get(SEED_VAR_NAME), 2), ")"]),
+					$ns.obj.getField($ns.var.get(SEED_VAR_NAME), 2)
 				),
 				"=",
 				$ns.ui.input("answer")
 			])
 		],
-		solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", $ns.var.get(SEED_VAR))),
+		solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", $ns.var.get(SEED_VAR_NAME))),
 		correctionPlan: $ns.fn.newNReturn(
 			$ns.fn.getNRun("compare", [
 				"=",
-				$ns.var.get(ANSWER_VAR),
-				$ns.fn.getNRun("op", $ns.var.get(SEED_VAR))
+				$ns.var.get(ANSWER_VAR_NAME),
+				$ns.fn.getNRun("op", $ns.var.get(SEED_VAR_NAME))
 			])
 		)
 	}

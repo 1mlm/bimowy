@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-	ANSWER_VAR,
+	ANSWER_VAR_NAME,
 	correct,
 	type ExerciseTemplateResource,
 	generateSeed,
 	generateSolution,
-	SEED_VAR
+	SEED_VAR_NAME
 } from "@/ns/resource-types/exercise-template";
 import { $ns } from "@/ns/util/helpers";
 
@@ -30,12 +30,12 @@ test("temp sandbox: function-only plans", () => {
 			solutionPlan: $ns.fn.newNReturn(
 				$ns.fn.getNRun("op", [
 					"+",
-					$ns.obj.getField($ns.var.get(SEED_VAR), "a"),
-					$ns.obj.getField($ns.var.get(SEED_VAR), "b")
+					$ns.obj.getField($ns.var.get(SEED_VAR_NAME), "a"),
+					$ns.obj.getField($ns.var.get(SEED_VAR_NAME), "b")
 				])
 			),
 			correctionPlan: $ns.fn.newNReturn(
-				$ns.fn.getNRun("compare", ["=", $ns.var.get(ANSWER_VAR), 5])
+				$ns.fn.getNRun("compare", ["=", $ns.var.get(ANSWER_VAR_NAME), 5])
 			)
 		}
 	};
