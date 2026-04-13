@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import type { PropsWithChildren } from "react";
-
 import "./style.css";
+
 
 const outfitFont = Outfit({
 	subsets: ["latin"],

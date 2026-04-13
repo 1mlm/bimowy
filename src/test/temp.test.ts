@@ -3,7 +3,7 @@ import test from "node:test";
 import {
 	ANSWER_VAR_NAME,
 	correct,
-	type ExerciseTemplateResource,
+	ExerciseTemplateResource,
 	generateSeed,
 	generateSolution,
 	SEED_VAR_NAME
@@ -15,7 +15,7 @@ const TEMP_ANSWER = 5;
 
 // Temporary sandbox for fast experimentation without touching the main suites.
 test("temp sandbox: function-only plans", () => {
-	const resource: ExerciseTemplateResource = {
+	const resource = ExerciseTemplateResource.parse({
 		type: "exercise-template",
 		title: "Temp",
 		aliases: ["temp"],
@@ -38,11 +38,11 @@ test("temp sandbox: function-only plans", () => {
 				$ns.fn.getNRun("compare", ["=", $ns.var.get(ANSWER_VAR_NAME), 5])
 			)
 		}
-	};
+	});
 
 	const seed = generateSeed(resource);
 	assert.deepEqual(seed, TEMP_SEED);
 	assert.equal(generateSolution(resource, seed), TEMP_ANSWER);
-	assert.equal(correct(resource, seed, TEMP_ANSWER), true);
-	assert.equal(correct(resource, seed, TEMP_ANSWER - 1), false);
+	assert.equal(correct(resource, seed, { answer: TEMP_ANSWER }).answer.is_correct, true);
+	assert.equal(correct(resource, seed, { answer: TEMP_ANSWER - 1 }).answer.is_correct, false);
 });

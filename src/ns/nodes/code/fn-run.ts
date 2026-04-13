@@ -50,7 +50,8 @@ export const NSFunctionRunNodeData = createComplexNodeParser({
 		const instructions = executeNS(fn.instructions, ctx2);
 		assertIsArray(instructions);
 		for (const step of instructions) {
-			if (isReturnNode(step)) return step.value;
+			const res = executeNS(step, ctx2);
+			if (isReturnNode(res)) return res.value;
 		}
 
 		return null;

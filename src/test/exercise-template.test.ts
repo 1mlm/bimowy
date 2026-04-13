@@ -1,7 +1,7 @@
 import {
 	ANSWER_VAR_NAME,
 	correct,
-	type ExerciseTemplateResource,
+	ExerciseTemplateResource,
 	generateSeed,
 	generateSolution,
 	SEED_VAR_NAME
@@ -12,13 +12,15 @@ import { $group, type TestItem } from "./index.test";
 const OPERATION_SEED = ["-", 2, -8] as const;
 const OPERATION_ANSWER = 10;
 
-const operationsExerciseTest: ExerciseTemplateResource = {
+const operationsExerciseTest = ExerciseTemplateResource.parse({
 	type: "exercise-template",
 	title: "Operations (+/-)",
+	handle: "operations-test",
+	tags: ["math", "arithmetic"],
 	aliases: ["operations", "plus-minus", "plus", "minus", "+", "-", "+/-"],
 	description: "Handles positive and negative operands with dynamic seed.",
 	beta: true,
-	id: "operations-test",
+	id: "11111111-1111-4111-8111-111111111111",
 	data: {
 		exampleSeed: OPERATION_SEED,
 		exampleAnswer: OPERATION_ANSWER,
@@ -58,7 +60,7 @@ const operationsExerciseTest: ExerciseTemplateResource = {
 			])
 		)
 	}
-};
+});
 
 const templateExerciseCases = [
 	{
@@ -74,7 +76,9 @@ const templateExerciseCases = [
 				name: "exampleSeed correction accepts exampleAnswer",
 				expected: true,
 				actual: () =>
-					correct(operationsExerciseTest, operationsExerciseTest.data.exampleSeed, OPERATION_ANSWER)
+					correct(operationsExerciseTest, operationsExerciseTest.data.exampleSeed, {
+						answer: OPERATION_ANSWER
+					}).answer.is_correct
 			}
 		]
 	},
@@ -97,11 +101,9 @@ const templateExerciseCases = [
 				name: "correction rejects wrong answer",
 				expected: false,
 				actual: () =>
-					correct(
-						operationsExerciseTest,
-						operationsExerciseTest.data.exampleSeed,
-						OPERATION_ANSWER + 1
-					)
+					correct(operationsExerciseTest, operationsExerciseTest.data.exampleSeed, {
+						answer: OPERATION_ANSWER + 1
+					}).answer.is_correct
 			}
 		]
 	}

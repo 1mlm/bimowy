@@ -62,6 +62,7 @@
 			}
 		}
 	},
+
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",

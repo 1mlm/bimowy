@@ -9,6 +9,20 @@ import { NSResource } from ".";
 
 export const SEED_VAR_NAME = "_seed";
 export const ANSWER_VAR_NAME = "_answer";
+export const INPUTS_VAR_NAME = "_inputs";
+
+export type CorrectionNote = {
+	type: "note" | "warning";
+	message: string;
+};
+
+export type InputCorrection = {
+	is_correct: boolean;
+	value?: unknown;
+	note?: CorrectionNote;
+};
+
+export type CorrectionResult = Record<string, InputCorrection>;
 
 const ExerciseTemplateResourceDataBaseSchema = z.object({
 	exampleSeed: z.unknown(),
@@ -57,18 +71,164 @@ export function generateSolution(resource: ExerciseTemplateResource, seed: unkno
 	return executeNS($ns.fn.run(resource.data.solutionPlan, []), seedCtx);
 }
 
-export function correct(resource: ExerciseTemplateResource, seed: unknown, answer: unknown) {
+function collectInputIds(node: unknown): string[] {
+	if (Array.isArray(node)) return node.flatMap(collectInputIds);
+	if (typeof node !== "object" || node === null) return [];
+	const candidate = node as Record<string, unknown>;
+	const direct =
+		candidate._nstype === "ui-input" && typeof candidate.id === "string" ? [candidate.id] : [];
+	return [...direct, ...Object.values(candidate).flatMap((value) => collectInputIds(value))];
+}
+
+export function getInputIds(resource: ExerciseTemplateResource, seed: unknown): string[] {
+	const ui = generateUI(resource, seed);
+	return Array.from(new Set(collectInputIds(ui)));
+}
+
+function toCorrectionResult(
+	inputIds: string[],
+	inputs: Record<string, unknown>,
+	result: unknown
+): CorrectionResult {
+	if (typeof result === "boolean") {
+		return Object.fromEntries(
+			inputIds.map((id) => [id, { is_correct: result }])
+		) as CorrectionResult;
+	}
+
+	if (typeof result === "object" && result !== null && !Array.isArray(result)) {
+		const obj = result as Record<string, unknown>;
+		return Object.fromEntries(
+			inputIds.map((id) => {
+				const value = obj[id];
+				if (typeof value === "boolean") return [id, { is_correct: value }] as const;
+				if (typeof value === "object" && value !== null && "is_correct" in value) {
+					const candidate = value as { is_correct: unknown; value?: unknown; note?: unknown };
+					const note =
+						typeof candidate.note === "object" &&
+						candidate.note !== null &&
+						("type" in candidate.note || "message" in candidate.note)
+							? (candidate.note as CorrectionNote)
+							: undefined;
+					return [
+						id,
+						{
+							is_correct: Boolean(candidate.is_correct),
+							value: candidate.value,
+							note
+						}
+					] as const;
+				}
+				return [
+					id,
+					{
+						is_correct: isDeepStrictEqual(value, inputs[id]),
+						value,
+						note: {
+							type: "warning",
+							message: `Correction plan did not return a boolean status for "${id}", falling back to deep comparison.`
+						}
+					}
+				] as const;
+			})
+		) as CorrectionResult;
+	}
+
+	return Object.fromEntries(
+		inputIds.map((id) => [
+			id,
+			{
+				is_correct: false,
+				note: {
+					type: "warning",
+					message: "Correction plan returned an unsupported value."
+				}
+			}
+		])
+	) as CorrectionResult;
+}
+
+function fallbackSolutionCorrection(
+	resource: ExerciseTemplateResource,
+	seed: unknown,
+	inputs: Record<string, unknown>,
+	inputIds: string[]
+): CorrectionResult {
+	const solution = generateSolution(resource, seed);
+	if (typeof solution === "object" && solution !== null && !Array.isArray(solution)) {
+		const sol = solution as Record<string, unknown>;
+		return Object.fromEntries(
+			inputIds.map((id) => [
+				id,
+				{
+					is_correct: isDeepStrictEqual(sol[id], inputs[id]),
+					value: sol[id]
+				}
+			])
+		) as CorrectionResult;
+	}
+
+	if (inputIds.length === 1) {
+		const onlyId = inputIds[0];
+		return {
+			[onlyId]: {
+				is_correct: isDeepStrictEqual(solution, inputs[onlyId]),
+				value: solution
+			}
+		};
+	}
+
+	if ("answer" in inputs) {
+		return Object.fromEntries(
+			inputIds.map((id) => [
+				id,
+				{
+					is_correct: id === "answer" ? isDeepStrictEqual(solution, inputs.answer) : false,
+					value: id === "answer" ? solution : undefined,
+					note:
+						id === "answer"
+							? undefined
+							: {
+									type: "warning",
+									message:
+										"No correctionPlan provided, and solutionPlan is scalar while UI expects multiple inputs."
+								}
+				}
+			])
+		) as CorrectionResult;
+	}
+
+	return Object.fromEntries(
+		inputIds.map((id) => [
+			id,
+			{
+				is_correct: false,
+				note: {
+					type: "warning",
+					message: "No correctionPlan provided, and scalar solution cannot be mapped to this input."
+				}
+			}
+		])
+	) as CorrectionResult;
+}
+
+export function correct(
+	resource: ExerciseTemplateResource,
+	seed: unknown,
+	inputs: Record<string, unknown>
+): CorrectionResult {
+	const inputIds = getInputIds(resource, seed);
 	const ctx = createSeededRuntimeContext(seed);
-	ctx.setVar(ANSWER_VAR_NAME, answer);
+	ctx.setVar(INPUTS_VAR_NAME, inputs);
+	ctx.setVar(ANSWER_VAR_NAME, inputs.answer);
 
 	if (resource.data.correctionPlan) {
 		const correctionResult = executeNS($ns.fn.run(resource.data.correctionPlan, []), ctx);
-		if (typeof correctionResult === "boolean") return correctionResult;
-		return isDeepStrictEqual(correctionResult, answer);
+		return toCorrectionResult(inputIds, inputs, correctionResult);
 	}
 
 	if (resource.data.solutionPlan)
-		return isDeepStrictEqual(generateSolution(resource, seed), answer);
+		return fallbackSolutionCorrection(resource, seed, inputs, inputIds);
 
 	throw new Error("Template has neither solutionPlan nor correctionPlan");
 }
