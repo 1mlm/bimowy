@@ -1,23 +1,19 @@
 import { inspect } from "node:util";
 
 const emojis = {
+	debug: "🐛",
 	ok: "✅",
 	err: "❌",
 	yay: "🎉",
 	warn: "⚠️",
-	info: "🟦",
-	debug: "🐛",
 	skip: "⏭️ ",
 	prep: "⏳",
-	start: "🚀",
-	end: "🏁",
-	fail: "💥",
-	question: "❓",
-	delete: "🗑️ "
+	start: "🚀"
 } as const;
 
 type Emoji = (typeof emojis)[keyof typeof emojis] | (string & {});
 
+const inspectOptions = { colors: true, numericSeparator: true, depth: Infinity, compact: false };
 export function echo(emoji: Emoji, message: unknown) {
 	const now = new Date();
 
@@ -28,10 +24,7 @@ export function echo(emoji: Emoji, message: unknown) {
 		`:${String(now.getMinutes()).padStart(2, "0")}` +
 		`:${String(now.getSeconds()).padStart(2, "0")}`;
 
-	const correctMessage =
-		typeof message === "string"
-			? message
-			: inspect(message, { colors: true, numericSeparator: true, depth: Infinity, compact: false });
+	const correctMessage = typeof message === "string" ? message : inspect(message, inspectOptions);
 
-	console.log(`[${formattedNow}] ${emoji} ${correctMessage}`);
+	console.log(`[${formattedNow}]${emoji ? ` ${emoji}` : ""} ${correctMessage}`);
 }
