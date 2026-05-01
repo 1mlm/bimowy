@@ -16,5 +16,7 @@ const hubItems = [
 }[];
 
 export default function HomePage() {
-	return <main></main>;
+	return <main>
+		<div className="h-full aspect-square"></div>
+	</main>;
 }
