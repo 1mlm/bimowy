@@ -7,7 +7,7 @@ import {
 	SEED_VAR_NAME
 } from "@/ns/resource-types/exercise-template";
 import { $ns } from "@/ns/util/helpers";
-import { $group, type TestItem } from "./index.test";
+import { $group, type TestItem } from "./util-test";
 
 const OPERATION_SEED = ["-", 2, -8] as const;
 const OPERATION_ANSWER = 10;

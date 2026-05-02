@@ -1,22 +1,17 @@
-import { prisma } from "@/db";
-import { ResourceType } from "@/db/prisma-generated/enums";
+import { prisma } from "@/db/client";
+
+export type FetchedResource = Awaited<ReturnType<typeof fetchResources>>[number];
 
 export async function fetchResources() {
 	return prisma.resource.findMany({
-		where: { type: ResourceType.TEMPLATE_EXERCISE },
 		include: { tags: true },
-		orderBy: { title: "asc" }
+		orderBy: { updatedAt: "desc" }
 	});
 }
 
-export async function fetchResource(handle: string) {
-	return prisma.resource.findUnique({
-		where: {
-			handle_type: {
-				handle,
-				type: ResourceType.TEMPLATE_EXERCISE
-			}
-		},
-		include: { tags: true }
-	});
-}
+// export async function fetchResource(handle: string) {
+// 	return prisma.resource.findUnique({
+// 		where: { handle },
+// 		include: { tags: true }
+// 	});
+// }

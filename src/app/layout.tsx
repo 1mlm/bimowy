@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import type { PropsWithChildren } from "react";
-import "./style.css";
-
+import "@/ui/style.css";
+import SideBarWrapper from "@/ui/layout/SidebarWrapper";
 
 const outfitFont = Outfit({
 	subsets: ["latin"],
@@ -17,7 +17,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en">
-			<body className={`${outfitFont.className}`}>{children}</body>
+			<body className={`${outfitFont.className}`}>
+				<SideBarWrapper>{children}</SideBarWrapper>
+			</body>
 		</html>
 	);
 }

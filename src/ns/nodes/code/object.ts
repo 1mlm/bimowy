@@ -10,7 +10,9 @@ export const NSObjectNodeData = createComplexNodeParser({
 		if (typeof node.props !== "object" || node.props === null || Array.isArray(node.props)) {
 			throw new Error("object node props must be an object");
 		}
-		return Object.fromEntries(Object.entries(node.props).map(([key, value]) => [key, executeNS(value, ctx)]));
+		return Object.fromEntries(
+			Object.entries(node.props).map(([key, value]) => [key, executeNS(value, ctx)])
+		);
 	},
 	scan: (node, ctx) => {
 		if (typeof node.props !== "object" || node.props === null || Array.isArray(node.props)) {

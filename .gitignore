@@ -45,7 +45,7 @@ private
 
 # prisma
 prisma/migrations
-src/db/prisma-generated
+src/db/generated
 
 # personal
 **/TODO.md

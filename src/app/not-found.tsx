@@ -1,3 +1,13 @@
+"use client";
+import { BadgeQuestionMarkIcon } from "lucide-react";
+import { MetaPage } from "@/ui/templates/MetaPage";
+
 export default function NotFoundPage() {
-	return <div className="flex-center text-only-text font-bold">Page Not found</div>;
+	return (
+		<MetaPage
+			title="Page Not Found"
+			description="bro WHAT could you be looking for"
+			icon={BadgeQuestionMarkIcon}
+		/>
+	);
 }

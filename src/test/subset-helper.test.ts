@@ -12,7 +12,7 @@ import {
 	isUnionSchema,
 	isWhateverSchema
 } from "@/ns/util/subset.util";
-import { $group } from "./index.test";
+import { $group } from "./util-test";
 
 const subsetHelperTestCases = [
 	{

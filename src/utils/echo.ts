@@ -22,7 +22,9 @@ export function echo(emoji: Emoji, message: unknown) {
 		`/${String(now.getMonth() + 1).padStart(2, "0")}M` +
 		` ${String(now.getHours()).padStart(2, "0")}` +
 		`:${String(now.getMinutes()).padStart(2, "0")}` +
-		`:${String(now.getSeconds()).padStart(2, "0")}`;
+		`:${String(now.getSeconds()).padStart(2, "0")}` +
+		`.` +
+		`${String(now.getMilliseconds()).padStart(3, "0")}`;
 
 	const correctMessage = typeof message === "string" ? message : inspect(message, inspectOptions);
 

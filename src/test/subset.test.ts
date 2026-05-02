@@ -1,6 +1,6 @@
 import z, { type ZodType } from "zod";
 import { isSchemaSubset } from "@/ns/util/subset";
-import { $group } from "./index.test";
+import { $group } from "./util-test";
 
 const APPLE = z.literal("apple");
 const BANANA = z.literal("banana");
