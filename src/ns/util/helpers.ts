@@ -8,7 +8,7 @@ import type { NSReturnNode } from "../nodes/code/return";
 import type { NSVarGetNode } from "../nodes/code/var-get";
 import type { NSVarSetNode } from "../nodes/code/var-set";
 import type { NSUIInputNode } from "../nodes/ui/input";
-import type { NSUIViewNode } from "../nodes/ui/paragraph";
+import type { NSUIParagraphNode } from "../nodes/ui/paragraph";
 import type { NSUITextNode } from "../nodes/ui/text";
 import type { NSUIWidgetNode } from "../nodes/ui/widget";
 
@@ -52,7 +52,7 @@ const cond = (condition: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 		_nstype: "ui-text",
 		text
 	}),
-	uiParagraph = (items: NSNode): NSUIViewNode => ({
+	uiParagraph = (items: NSNode): NSUIParagraphNode => ({
 		_nstype: "ui-prgh",
 		items
 	}),

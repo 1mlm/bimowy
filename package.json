@@ -11,14 +11,11 @@
 		"start": "next start",
 		"format": "biome format --write",
 		"check": "tsc --noEmit",
-
 		"db:reset": "npx prisma validate && npx prisma format && npx prisma db push && npx prisma db seed && npx prisma generate",
-
 		"play": "tsx src/playground",
 		"play:w": "tsx watch src/playground",
 		"test": "tsx src/test/index.test.ts",
 		"test:w": "tsx watch src/test/index.test.ts",
-
 		"all": "npm run format && npm run check && npm run test"
 	},
 	"dependencies": {
@@ -44,6 +41,7 @@
 		"next": "^16.1.6",
 		"nuqs": "^2.8.8",
 		"pg": "^8.18.0",
+		"radix-ui": "^1.4.3",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
 		"tailwind-merge": "^3.5.0",

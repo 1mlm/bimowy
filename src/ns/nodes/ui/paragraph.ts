@@ -10,4 +10,4 @@ export const NSUIParagraphNodeData = createComplexNodeParser({
 		return executeNS(node.items, ctx);
 	}
 });
-export type NSUIViewNode = z.infer<typeof NSUIParagraphNodeData.schema>;
+export type NSUIParagraphNode = z.infer<typeof NSUIParagraphNodeData.schema>;

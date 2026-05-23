@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Google_Sans_Code, Outfit } from "next/font/google";
 import type { PropsWithChildren } from "react";
 import "@/ui/style.css";
 import SideBarWrapper from "@/ui/layout/SidebarWrapper";
 
-const outfitFont = Outfit({
-	subsets: ["latin"],
-	variable: "--font-outfit"
-});
+const mainFont = Outfit();
+const monoFont = Google_Sans_Code({ variable: "--font-mono" });
 
 export const metadata: Metadata = {
 	description: "Learning but it's actually fun",
@@ -17,8 +15,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en">
-			<body className={`${outfitFont.className}`}>
-				<SideBarWrapper>{children}</SideBarWrapper>
+			<body className={`${mainFont.className} ${monoFont.variable}`}>
+				<SideBarWrapper>
+					{children}
+				</SideBarWrapper>
 			</body>
 		</html>
 	);

@@ -61,7 +61,9 @@ export const NSComplexCodeNodesData = [
 export const NSNodeData = [...NSSimpleCodeNodesData, ...NSComplexCodeNodesData];
 
 export const NSSimpleNodeSchema = z.union(NSSimpleCodeNodesData.map((n) => n.schema));
+export type NSSimpleNode = z.infer<typeof NSSimpleNodeSchema>;
 export const NSComplexNodeSchema = z.union(NSComplexCodeNodesData.map((n) => n.schema));
+export type NSComplexNode = z.infer<typeof NSComplexNodeSchema>;
 
 export const NSNodeSchema = z.union([NSSimpleNodeSchema, NSComplexNodeSchema]);
 export type NSNode = z.infer<typeof NSNodeSchema>;

@@ -94,8 +94,7 @@ export default function SideBarWrapper({ children }: { children: ReactNode }) {
 	return (
 		<SidebarProvider open={isOpen}>
 			<CustomSidebar />
-			<main className={`w-full h-screen p-8 flex flex-col gap-5`}>
-				{/* Main stuff */}
+			<main className="w-full min-h-screen p-4">
 				{children}
 			</main>
 		</SidebarProvider>
