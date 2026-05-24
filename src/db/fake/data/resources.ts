@@ -308,7 +308,7 @@ export const FAKE_RESOURCES: FakeResource[] = [
 					$ns.ui.prgh([
 						"What is",
 						field("pct"),
-						"% of",
+						"percent of",
 						field("base"),
 						"?",
 						$ns.ui.input("answer")
@@ -354,6 +354,42 @@ export const FAKE_RESOURCES: FakeResource[] = [
 					])
 				],
 				solutionPlan: $ns.fn.newNReturn(field("a"))
+			})
+		)
+	},
+	{
+		handle: "rounding",
+		title: "Rounding",
+		aliases: ["round", "rounding", "nearest ten"],
+		desc: "Round a number to the nearest 10.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "arithmetic" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { n: 47 },
+				exampleAnswer: 50,
+				// n = 10–19, 21–29, ..., 91–99 (never a multiple of 10)
+				seedGeneratorPlan: $ns.fn.newNReturn(
+					$ns.obj.new({
+						n: $ns.fn.getNRun("op", [
+							"+",
+							$ns.fn.getNRun("op", ["*", $ns.fn.getNRun("random", ["int", 1, 9]), 10]),
+							$ns.fn.getNRun("random", ["int", 1, 9])
+						])
+					})
+				),
+				uiPlan: [
+					$ns.ui.prgh(["Round", field("n"), "to the nearest 10:", $ns.ui.input("answer")])
+				],
+				// round(n / 10) * 10
+				solutionPlan: $ns.fn.newNReturn(
+					$ns.fn.getNRun("op", [
+						"*",
+						$ns.fn.getNRun("round", [$ns.fn.getNRun("op", ["/", field("n"), 10])]),
+						10
+					])
+				)
 			})
 		)
 	}
