@@ -10,7 +10,7 @@ export const FAKE_RESOURCES: FakeResource[] = [
 		title: "Addition",
 		aliases: ["addition", "add", "sum", "plus", "+"],
 		desc: "Practice adding two numbers together.",
-		beta: false,
+		beta: true,
 		tags: { connect: [{ handle: "math" }, { handle: "arithmetic" }] },
 		type: "TEMPLATE_EXERCISE",
 		data: JSON.parse(
