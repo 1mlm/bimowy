@@ -52,9 +52,7 @@ export const FAKE_RESOURCES: FakeResource[] = [
 						b: $ns.fn.getNRun("random", ["int", 1, 20])
 					})
 				),
-				uiPlan: [
-					$ns.ui.prgh([field("a"), "minus", field("b"), "equals", $ns.ui.input("answer")])
-				],
+				uiPlan: [$ns.ui.prgh([field("a"), "minus", field("b"), "equals", $ns.ui.input("answer")])],
 				solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", ["-", field("a"), field("b")]))
 			})
 		)
@@ -77,9 +75,7 @@ export const FAKE_RESOURCES: FakeResource[] = [
 						b: $ns.fn.getNRun("random", ["int", 2, 12])
 					})
 				),
-				uiPlan: [
-					$ns.ui.prgh([field("a"), "×", field("b"), "=", $ns.ui.input("answer")])
-				],
+				uiPlan: [$ns.ui.prgh([field("a"), "×", field("b"), "=", $ns.ui.input("answer")])],
 				solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", ["*", field("a"), field("b")]))
 			})
 		)
@@ -97,19 +93,20 @@ export const FAKE_RESOURCES: FakeResource[] = [
 				exampleSeed: { a: 24, b: 6 },
 				exampleAnswer: 4,
 				// Multi-step: generate b and quotient, compute a = b × quotient
-				seedGeneratorPlan: $ns.fn.new([], [
-					$ns.var.set("b", $ns.fn.getNRun("random", ["int", 2, 10])),
-					$ns.var.set("q", $ns.fn.getNRun("random", ["int", 2, 12])),
-					$ns.rtrn(
-						$ns.obj.new({
-							b: $ns.var.get("b"),
-							a: $ns.fn.getNRun("op", ["*", $ns.var.get("b"), $ns.var.get("q")])
-						})
-					)
-				]),
-				uiPlan: [
-					$ns.ui.prgh([field("a"), "÷", field("b"), "=", $ns.ui.input("answer")])
-				],
+				seedGeneratorPlan: $ns.fn.new(
+					[],
+					[
+						$ns.var.set("b", $ns.fn.getNRun("random", ["int", 2, 10])),
+						$ns.var.set("q", $ns.fn.getNRun("random", ["int", 2, 12])),
+						$ns.rtrn(
+							$ns.obj.new({
+								b: $ns.var.get("b"),
+								a: $ns.fn.getNRun("op", ["*", $ns.var.get("b"), $ns.var.get("q")])
+							})
+						)
+					]
+				),
+				uiPlan: [$ns.ui.prgh([field("a"), "÷", field("b"), "=", $ns.ui.input("answer")])],
 				solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", ["/", field("a"), field("b")]))
 			})
 		)
@@ -161,18 +158,19 @@ export const FAKE_RESOURCES: FakeResource[] = [
 				exampleSeed: { root: 4, square: 16 },
 				exampleAnswer: 4,
 				// Multi-step: generate root, compute square = root²
-				seedGeneratorPlan: $ns.fn.new([], [
-					$ns.var.set("r", $ns.fn.getNRun("random", ["int", 2, 12])),
-					$ns.rtrn(
-						$ns.obj.new({
-							root: $ns.var.get("r"),
-							square: $ns.fn.getNRun("op", ["**", $ns.var.get("r"), 2])
-						})
-					)
-				]),
-				uiPlan: [
-					$ns.ui.prgh(["√", field("square"), "=", $ns.ui.input("answer")])
-				],
+				seedGeneratorPlan: $ns.fn.new(
+					[],
+					[
+						$ns.var.set("r", $ns.fn.getNRun("random", ["int", 2, 12])),
+						$ns.rtrn(
+							$ns.obj.new({
+								root: $ns.var.get("r"),
+								square: $ns.fn.getNRun("op", ["**", $ns.var.get("r"), 2])
+							})
+						)
+					]
+				),
+				uiPlan: [$ns.ui.prgh(["√", field("square"), "=", $ns.ui.input("answer")])],
 				solutionPlan: $ns.fn.newNReturn(field("root"))
 			})
 		)
@@ -197,7 +195,7 @@ export const FAKE_RESOURCES: FakeResource[] = [
 				),
 				uiPlan: [
 					$ns.ui.prgh(["Which is greater?", field("a"), "or", field("b")]),
-					// Options are {value: number} — UIRenderer uses String(value) as label
+					// Options are {value: number}: UIRenderer uses String(value) as label
 					$ns.ui.choice("answer", [
 						$ns.obj.new({ value: field("a") }),
 						$ns.obj.new({ value: field("b") })
