@@ -64,7 +64,7 @@ export const data: SidebarData = {
 				{
 					name: "Browse",
 					id: "browse",
-					href: "/",
+					href: "/browse",
 					icon: CompassIcon
 				},
 				{
@@ -169,7 +169,7 @@ function Header() {
 							<div className="flex flex-col leading-none">
 								<span className="font-medium text-xl">{data.main.title}</span>
 								{data.main.subtitle && (
-									<span className="text-md opacity-50">{data.main.subtitle}</span>
+									<span className="text-sm opacity-50">{data.main.subtitle}</span>
 								)}
 							</div>
 						</a>
@@ -188,7 +188,7 @@ function MainNavButtons() {
 			<SidebarGroupContent>
 				<SidebarMenu>
 					{n.items.map((item) => {
-						const isActive = !item.disabled && pathname.startsWith(item.href === "/" ? "/browse" : item.href);
+						const isActive = !item.disabled && pathname.startsWith(item.href);
 						return (
 							<SidebarMenuItem key={item.id}>
 								<SidebarMenuButton asChild disabled={item.disabled} aria-disabled={item.disabled} isActive={isActive}>
