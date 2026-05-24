@@ -54,4 +54,3 @@ src/playground/
 # src/app/test/
 dev.log
 tsc-out.txt
-temp/

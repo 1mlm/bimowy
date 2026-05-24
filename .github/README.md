@@ -8,9 +8,9 @@
 
 ## Concept
 
-Static exercise books suck. PluriHub is an attempt at making learning resources that are actually dynamic — exercises generate new numbers every time, UI adapts to the content, and the correction logic lives alongside the exercise itself.
+Static exercise books suck. PluriHub is an attempt at making learning resources that are actually dynamic. Exercises generate new numbers every time, UI adapts to the content, and the correction logic lives alongside the exercise itself.
 
-Under the hood, resources are described using a small node-based system (think visual scripting, but stored as JSON). The platform interprets these graphs at runtime to generate seeds, render UIs, and check answers. The goal is to eventually support way more than just math — physics, code, logic, whatever can be expressed as a graph.
+Under the hood, resources are described using a small node-based system (think visual scripting, but stored as JSON). The platform interprets these graphs at runtime to generate seeds, render UIs, and check answers. The goal is to eventually support way more than just math; physics, code, logic, whatever can be expressed as a node tree.
 
 ## Run locally
 
@@ -28,9 +28,9 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
-- `BETTER_AUTH_SECRET` — random string, generate with `openssl rand -base64 32`
-- `BETTER_AUTH_URL` — your local dev URL (e.g. `http://localhost:3008`)
-- `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` — create an OAuth app at [github.com/settings/developers](https://github.com/settings/developers), set the callback URL to `{BETTER_AUTH_URL}/api/auth/callback/github`
+- `BETTER_AUTH_SECRET`: random string, generate with `openssl rand -base64 32`
+- `BETTER_AUTH_URL`: your local dev URL (e.g. `http://localhost:3008`)
+- `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`: create an OAuth app at [github.com/settings/developers](https://github.com/settings/developers), set the callback URL to `{BETTER_AUTH_URL}/api/auth/callback/github`
 
 Then set up the database:
 
