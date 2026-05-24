@@ -358,6 +358,100 @@ export const FAKE_RESOURCES: FakeResource[] = [
 		)
 	},
 	{
+		handle: "fraction-of-number",
+		title: "Fraction of a Number",
+		aliases: ["fraction-of", "fraction of", "fraction"],
+		desc: "Find a unit fraction of a whole number.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "fractions" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { n: 1, d: 3, base: 12 },
+				exampleAnswer: 4,
+				seedGeneratorPlan: $ns.fn.new(
+					[],
+					[
+						$ns.var.set("d", $ns.fn.getNRun("random", ["int", 2, 6])),
+						$ns.var.set("mult", $ns.fn.getNRun("random", ["int", 2, 10])),
+						$ns.rtrn(
+							$ns.obj.new({
+								n: 1,
+								d: $ns.var.get("d"),
+								base: $ns.fn.getNRun("op", ["*", $ns.var.get("d"), $ns.var.get("mult")])
+							})
+						)
+					]
+				),
+				uiPlan: [
+					$ns.ui.prgh([
+						"What is",
+						$ns.ui.widget("Fraction", $ns.obj.new({ numerator: 1, denominator: field("d") })),
+						"of",
+						field("base"),
+						"?",
+						$ns.ui.input("answer")
+					])
+				],
+				solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", ["/", field("base"), field("d")]))
+			})
+		)
+	},
+	{
+		handle: "fraction-comparison",
+		title: "Compare Fractions",
+		aliases: ["compare-fractions", "fraction comparison", "which fraction"],
+		desc: "Identify which of two fractions is larger.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "fractions" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { an: 1, ad: 2, bn: 1, bd: 3 },
+				exampleAnswer: 0,
+				seedGeneratorPlan: $ns.fn.newNReturn(
+					$ns.obj.new({
+						an: $ns.fn.getNRun("random", ["int", 1, 7]),
+						ad: $ns.fn.getNRun("random", ["int", 2, 8]),
+						bn: $ns.fn.getNRun("random", ["int", 1, 7]),
+						bd: $ns.fn.getNRun("random", ["int", 2, 8])
+					})
+				),
+				uiPlan: [
+					$ns.ui.prgh([
+						"Which fraction is larger?",
+						$ns.ui.widget("Fraction", $ns.obj.new({ numerator: field("an"), denominator: field("ad") })),
+						"or",
+						$ns.ui.widget("Fraction", $ns.obj.new({ numerator: field("bn"), denominator: field("bd") }))
+					]),
+					$ns.ui.choice("answer", [
+						$ns.obj.new({ label: $ns.fn.getNRun("concat", [field("an"), "/", field("ad")]), value: 0 }),
+						$ns.obj.new({ label: $ns.fn.getNRun("concat", [field("bn"), "/", field("bd")]), value: 1 })
+					])
+				],
+				correctionPlan: $ns.fn.new(
+					[],
+					[
+						$ns.var.set("_a", $ns.fn.getNRun("op", ["/", field("an"), field("ad")])),
+						$ns.var.set("_b", $ns.fn.getNRun("op", ["/", field("bn"), field("bd")])),
+						$ns.var.set(
+							"_winner",
+							$ns.cond($ns.fn.getNRun("compare", [">", $ns.var.get("_a"), $ns.var.get("_b")]), 0, 1)
+						),
+						$ns.rtrn(
+							$ns.obj.new({
+								answer: $ns.obj.new({
+									is_correct: $ns.fn.getNRun("compare", ["=", answer, $ns.var.get("_winner")]),
+									value: $ns.var.get("_winner")
+								})
+							})
+						)
+					]
+				)
+			})
+		)
+	},
+	{
 		handle: "rounding",
 		title: "Rounding",
 		aliases: ["round", "rounding", "nearest ten"],
