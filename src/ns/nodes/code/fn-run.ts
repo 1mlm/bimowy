@@ -24,8 +24,8 @@ export const NSFunctionRunNodeData = createComplexNodeParser({
 		}
 
 		assertIsCustomFunction(fn);
-		const inputNames = executeNS(fn.inputs, ctx);
-		assertIsArray(inputNames);
+		assertIsArray(fn.inputs);
+		const inputNames = fn.inputs;
 
 		const argValues = executeNS(node.args, ctx);
 		assertIsArray(argValues);
@@ -47,9 +47,8 @@ export const NSFunctionRunNodeData = createComplexNodeParser({
 			ctx2.setVar(inputName, argValues[i]);
 		}
 
-		const instructions = executeNS(fn.instructions, ctx2);
-		assertIsArray(instructions);
-		for (const step of instructions) {
+		assertIsArray(fn.instructions);
+		for (const step of fn.instructions) {
 			const res = executeNS(step, ctx2);
 			if (isReturnNode(res)) return res.value;
 		}

@@ -1,11 +1,28 @@
-import { isDeepStrictEqual } from "node:util";
 import z from "zod";
+import { NSResource } from ".";
 import { NSRuntimeContext } from "../context/runtime";
 import { executeNS } from "../execute";
 import { NSNodeSchema } from "../nodes";
 import { NSFunctionNodeData } from "../nodes/code/fn-create";
 import { $ns } from "../util/helpers";
-import { NSResource } from ".";
+
+function deepEqual(a: unknown, b: unknown): boolean {
+	if (a === b) return true;
+	if (typeof a !== typeof b || a === null || b === null) return false;
+	if (Array.isArray(a) && Array.isArray(b)) {
+		if (a.length !== b.length) return false;
+		return a.every((v, i) => deepEqual(v, b[i]));
+	}
+	if (typeof a === "object" && typeof b === "object") {
+		const ka = Object.keys(a as object);
+		const kb = Object.keys(b as object);
+		if (ka.length !== kb.length) return false;
+		return ka.every((k) =>
+			deepEqual((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k])
+		);
+	}
+	return false;
+}
 
 export const SEED_VAR_NAME = "_seed";
 export const ANSWER_VAR_NAME = "_answer";
@@ -122,7 +139,7 @@ function toCorrectionResult(
 				return [
 					id,
 					{
-						is_correct: isDeepStrictEqual(value, inputs[id]),
+						is_correct: deepEqual(value, inputs[id]),
 						value,
 						note: {
 							type: "warning",
@@ -161,7 +178,7 @@ function fallbackSolutionCorrection(
 			inputIds.map((id) => [
 				id,
 				{
-					is_correct: isDeepStrictEqual(sol[id], inputs[id]),
+					is_correct: deepEqual(sol[id], inputs[id]),
 					value: sol[id]
 				}
 			])
@@ -172,7 +189,7 @@ function fallbackSolutionCorrection(
 		const onlyId = inputIds[0];
 		return {
 			[onlyId]: {
-				is_correct: isDeepStrictEqual(solution, inputs[onlyId]),
+				is_correct: deepEqual(solution, inputs[onlyId]),
 				value: solution
 			}
 		};
@@ -183,7 +200,7 @@ function fallbackSolutionCorrection(
 			inputIds.map((id) => [
 				id,
 				{
-					is_correct: id === "answer" ? isDeepStrictEqual(solution, inputs.answer) : false,
+					is_correct: id === "answer" ? deepEqual(solution, inputs.answer) : false,
 					value: id === "answer" ? solution : undefined,
 					note:
 						id === "answer"
