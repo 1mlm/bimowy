@@ -24,7 +24,7 @@ export function ResourceCard(resource: FetchedResource) {
 				${isFocused && "hover:scale-105"} active:scale-95 cursor-pointer`}
 				style={{ outlineColor: resourceTypeData.color }}
 			>
-				<ResourceCardTopLeftBadge {...{ resource }} />
+				<ResourceCardTopLeftBadge {...{ resource, isFocused }} />
 				{resource.beta && (
 					<span className="absolute -top-2 -right-2 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 text-[10px] font-semibold px-1.5 py-0.5 leading-none">
 						beta
