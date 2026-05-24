@@ -50,7 +50,6 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 	const status = useExerciseStore((s) => s.status);
 	const seed = useExerciseStore((s) => s.seed);
 	const inputs = useExerciseStore((s) => s.inputs);
-	const correction = useExerciseStore((s) => s.correction);
 	const setSeed = useExerciseStore((s) => s.setSeed);
 	const setStatus = useExerciseStore((s) => s.setStatus);
 	const setCorrection = useExerciseStore((s) => s.setCorrection);
@@ -119,41 +118,56 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 
 	const isLoading = status === "loading";
 	const isCorrect = status === "correct";
+	const isWrong = status === "wrong";
 
 	return (
-		<div className="flex h-full gap-4">
-			<div className="flex flex-1 flex-col items-center justify-center gap-8 p-6">
+		<div className="flex h-full">
+			<div className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
 				{isLoading && ui.length === 0 ? (
 					<div className="opacity-30 text-sm animate-pulse">Loading…</div>
 				) : (
 					<RootUIRenderer nodes={ui} />
 				)}
+				{isCorrect && (
+					<p className="text-green-400 text-sm font-semibold tracking-wide animate-in fade-in slide-in-from-bottom-2">
+						Correct! 🎉
+					</p>
+				)}
 			</div>
 
-			<aside className="flex flex-col justify-end gap-3 py-4 pr-2 w-44 shrink-0">
-				{correction && !isCorrect && (
-					<div className="text-xs font-mono text-red-400 text-right mb-1">Incorrect</div>
-				)}
-				{isCorrect ? (
-					<Button onClick={handleNext} className="gap-2">
-						<RefreshCwIcon className="size-4 stroke-2" />
-						Next
+			<aside className="flex flex-col justify-between py-4 pr-3 pl-2 w-44 shrink-0 border-l border-white/5">
+				<div className="flex flex-col gap-2">
+					<div className="text-[10px] uppercase tracking-widest opacity-30 font-semibold">
+						Exercise
+					</div>
+					<div className="text-xs font-mono opacity-50">
+						{(status === "idle" || isLoading) && "Ongoing"}
+						{isWrong && <span className="text-red-400">Incorrect</span>}
+						{isCorrect && <span className="text-green-400">Correct</span>}
+					</div>
+				</div>
+				<div className="flex flex-col gap-2">
+					{isCorrect ? (
+						<Button onClick={handleNext} className="gap-2">
+							<RefreshCwIcon className="size-4 stroke-2" />
+							Next
+						</Button>
+					) : (
+						<Button onClick={handleSubmit} disabled={isLoading} className="gap-2">
+							<CheckCheckIcon className="size-4 stroke-2" />
+							{isLoading ? "…" : "Submit"}
+						</Button>
+					)}
+					<Button
+						variant="secondary"
+						onClick={handleShowAnswer}
+						disabled={isLoading || isCorrect}
+						className="gap-2"
+					>
+						<EyeIcon className="size-4 stroke-2" />
+						Show Answer
 					</Button>
-				) : (
-					<Button onClick={handleSubmit} disabled={isLoading} className="gap-2">
-						<CheckCheckIcon className="size-4 stroke-2" />
-						{isLoading ? "…" : "Submit"}
-					</Button>
-				)}
-				<Button
-					variant="secondary"
-					onClick={handleShowAnswer}
-					disabled={isLoading || isCorrect}
-					className="gap-2"
-				>
-					<EyeIcon className="size-4 stroke-2" />
-					Show Answer
-				</Button>
+				</div>
 			</aside>
 		</div>
 	);
