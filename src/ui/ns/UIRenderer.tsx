@@ -38,23 +38,26 @@ function UIInputNode({ id }: { id: string }) {
 	const setInput = useExerciseStore((s) => s.setInput);
 
 	const inputCorrection = correction?.[id];
-	const isWrong = status === "wrong" && inputCorrection && !inputCorrection.is_correct;
 	const isCorrect = status === "correct";
 	const numValue = typeof value === "number" ? value : undefined;
+	const showingAnswer = status === "wrong" && inputCorrection && !inputCorrection.is_correct && numValue === inputCorrection.value;
+	const isWrong = status === "wrong" && inputCorrection && !inputCorrection.is_correct && !showingAnswer;
 
 	return (
 		<NumberInput
 			key={`${id}-${inputGeneration}`}
 			allowEmpty
 			defaultValue={numValue}
-			disabled={isCorrect}
+			disabled={isCorrect || showingAnswer}
 			onNewValue={(v) => setInput(id, v)}
 			className={
 				isWrong
 					? "ring-red-500/60! ring-2! animate-[shake_0.35s_ease-in-out]"
-					: isCorrect
-						? "ring-green-500/40! ring-2! opacity-70"
-						: ""
+					: showingAnswer
+						? "ring-amber-400/50! ring-2! opacity-70"
+						: isCorrect
+							? "ring-green-500/40! ring-2! opacity-70"
+							: ""
 			}
 		/>
 	);
