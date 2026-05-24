@@ -15,7 +15,7 @@ export default async function ResourcePage({ params }: { params: ResourcePagePar
 	if (!resource) throw new Error(`No ${label} found for handle: ${handle}`);
 
 	return (
-		<div className="flex flex-col h-full gap-3">
+		<div className="flex flex-col h-full gap-3 max-w-5xl mx-auto w-full">
 			<div className="flex flex-col gap-0.5 px-2">
 				<h1 className="text-2xl font-bold inline-flex items-center gap-2">
 					<resource_type.icon className="size-[0.85em] stroke-2" /> {resource.title}
