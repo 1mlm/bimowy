@@ -105,12 +105,8 @@ function UIInputChoiceNode({ id, options }: { id: string; options: ChoiceOption[
 
 function WidgetNode({ id, args }: { id: WidgetId; args: unknown }) {
 	const Widget = WidgetsRegistry[id];
-	return (
-		<div className="w-full rounded-xl overflow-hidden">
-			{/* biome-ignore lint/suspicious/noExplicitAny: widget args are unknown at compile time */}
-			<Widget {...(args as any)} />
-		</div>
-	);
+	// biome-ignore lint/suspicious/noExplicitAny: widget args are unknown at compile time
+	return <Widget {...(args as any)} />;
 }
 
 export function UIRenderer({ node }: { node: unknown }) {

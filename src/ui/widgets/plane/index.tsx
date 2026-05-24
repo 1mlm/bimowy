@@ -10,6 +10,7 @@ export default function Plane({
 }: PartialPlaneProps) {
 	const [xDiff, yDiff] = getViewBox(ranges).slice(2);
 	return (
+		<div className="w-full rounded-xl overflow-hidden">
 		<svg
 			className={`relative *:absolute
 		h-full w-full
@@ -27,5 +28,6 @@ export default function Plane({
 			))}
 			<PlaneElements {...{ elems, excluded, ranges }} />
 		</svg>
+		</div>
 	);
 }
