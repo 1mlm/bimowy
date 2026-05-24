@@ -10,6 +10,7 @@ import {
 	KeyRoundIcon,
 	LandmarkIcon,
 	type LucideIcon,
+	RulerIcon,
 	SplitIcon,
 	SquareIcon,
 	ThumbsUpIcon,
@@ -32,5 +33,6 @@ export const TAGS_ICON_MAP: { [key: string]: { icon: LucideIcon } } = {
 	morality: { icon: ThumbsUpIcon },
 	health: { icon: CrossIcon },
 	physics: { icon: AtomIcon },
-	algebra: { icon: VariableIcon }
+	algebra: { icon: VariableIcon },
+	geometry: { icon: RulerIcon }
 };
