@@ -97,7 +97,7 @@ export default function SideBarWrapper({ children }: { children: ReactNode }) {
 	return (
 		<SidebarProvider open={isOpen}>
 			<CustomSidebar />
-			<main className="w-full min-h-screen p-4">{children}</main>
+			<main className="w-full h-screen overflow-y-auto p-4">{children}</main>
 		</SidebarProvider>
 	);
 }

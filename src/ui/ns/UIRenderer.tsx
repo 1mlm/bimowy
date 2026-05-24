@@ -76,7 +76,7 @@ function UIInputChoiceNode({ id, options }: { id: string; options: ChoiceOption[
 			{options.map((opt) => {
 				const selected = value === opt.value;
 				const optCorrect = isSubmitted && inputCorrection && opt.value === inputCorrection.value;
-				const optWrong = isSubmitted && selected && inputCorrection && !inputCorrection.is_correct;
+				const optWrong = isSubmitted && selected && !optCorrect && inputCorrection && !inputCorrection.is_correct;
 
 				return (
 					<button
