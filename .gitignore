@@ -51,4 +51,5 @@ src/db/generated
 **/TODO.md
 src/playground/
 # src/app/test/
-.vscode/
+.vscode/dev.log
+tsc-out.txt
