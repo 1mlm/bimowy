@@ -14,13 +14,14 @@ type ExerciseStore = {
 	status: ExerciseStatus;
 	correction: CorrectionResult | null;
 	globalVars: Record<string, unknown>;
+	streak: number;
 	setSeed: (seed: unknown, ui: unknown[]) => void;
 	setInput: (id: string, value: unknown) => void;
 	setInputsAndBump: (inputs: Record<string, unknown>) => void;
 	setGlobalVar: (id: string, value: unknown) => void;
 	setStatus: (status: ExerciseStatus) => void;
 	setCorrection: (correction: CorrectionResult | null) => void;
-	resetForNewProblem: (seed: unknown, ui: unknown[]) => void;
+	resetForNewProblem: (seed: unknown, ui: unknown[], correct: boolean) => void;
 };
 
 function createExerciseStore() {
@@ -32,6 +33,7 @@ function createExerciseStore() {
 		status: "idle",
 		correction: null,
 		globalVars: {},
+		streak: 0,
 		setSeed: (seed, ui) =>
 			set((s) => ({ seed, ui, inputs: {}, inputGeneration: s.inputGeneration + 1, status: "idle", correction: null })),
 		setInput: (id, value) => set((s) => ({ inputs: { ...s.inputs, [id]: value } })),
@@ -40,8 +42,16 @@ function createExerciseStore() {
 		setGlobalVar: (id, value) => set((s) => ({ globalVars: { ...s.globalVars, [id]: value } })),
 		setStatus: (status) => set({ status }),
 		setCorrection: (correction) => set({ correction }),
-		resetForNewProblem: (seed, ui) =>
-			set((s) => ({ seed, ui, inputs: {}, inputGeneration: s.inputGeneration + 1, status: "idle", correction: null }))
+		resetForNewProblem: (seed, ui, correct) =>
+			set((s) => ({
+				seed,
+				ui,
+				inputs: {},
+				inputGeneration: s.inputGeneration + 1,
+				status: "idle",
+				correction: null,
+				streak: correct ? s.streak + 1 : 0
+			}))
 	}));
 }
 

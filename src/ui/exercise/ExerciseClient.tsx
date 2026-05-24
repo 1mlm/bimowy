@@ -50,6 +50,7 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 	const status = useExerciseStore((s) => s.status);
 	const seed = useExerciseStore((s) => s.seed);
 	const inputs = useExerciseStore((s) => s.inputs);
+	const streak = useExerciseStore((s) => s.streak);
 	const setSeed = useExerciseStore((s) => s.setSeed);
 	const setStatus = useExerciseStore((s) => s.setStatus);
 	const setCorrection = useExerciseStore((s) => s.setCorrection);
@@ -110,7 +111,7 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 	async function handleNext() {
 		try {
 			const { seed: newSeed, ui: newUi } = await fetchSeed(typeHandle, handle);
-			resetForNewProblem(newSeed, newUi);
+			resetForNewProblem(newSeed, newUi, status === "correct");
 		} catch (e) {
 			toast.error(e instanceof Error ? e.message : "Failed to load next problem.");
 		}
@@ -145,6 +146,11 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 						{isWrong && <span className="text-red-400">Incorrect</span>}
 						{isCorrect && <span className="text-green-400">Correct</span>}
 					</div>
+					{streak > 0 && (
+						<div className="text-xs font-mono text-amber-400">
+							{streak} 🔥
+						</div>
+					)}
 				</div>
 				<div className="flex flex-col gap-2">
 					{isCorrect ? (
