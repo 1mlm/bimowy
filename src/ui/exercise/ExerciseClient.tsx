@@ -95,9 +95,9 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 		setStatus("loading");
 		try {
 			const { result } = await fetchCorrection(typeHandle, handle, seed, {});
-			const answerInputs: Record<string, number | undefined> = {};
+			const answerInputs: Record<string, unknown> = {};
 			for (const [id, val] of Object.entries(result)) {
-				if (typeof val.value === "number") answerInputs[id] = val.value;
+				if (val.value !== undefined) answerInputs[id] = val.value;
 			}
 			setCorrection(result);
 			setInputsAndBump(answerInputs);

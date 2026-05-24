@@ -93,7 +93,10 @@ function collectInputIds(node: unknown): string[] {
 	if (typeof node !== "object" || node === null) return [];
 	const candidate = node as Record<string, unknown>;
 	const direct =
-		candidate._nstype === "ui-input" && typeof candidate.id === "string" ? [candidate.id] : [];
+		(candidate._nstype === "ui-input" || candidate._nstype === "ui-input-choice") &&
+		typeof candidate.id === "string"
+			? [candidate.id]
+			: [];
 	return [...direct, ...Object.values(candidate).flatMap((value) => collectInputIds(value))];
 }
 
