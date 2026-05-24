@@ -46,11 +46,19 @@ export const FAKE_RESOURCES: FakeResource[] = [
 			JSON.stringify({
 				exampleSeed: { a: 9, b: 4 },
 				exampleAnswer: 5,
-				seedGeneratorPlan: $ns.fn.newNReturn(
-					$ns.obj.new({
-						a: $ns.fn.getNRun("random", ["int", 5, 30]),
-						b: $ns.fn.getNRun("random", ["int", 1, 20])
-					})
+				// Generate diff and b separately so a = diff + b always ensures a > b
+				seedGeneratorPlan: $ns.fn.new(
+					[],
+					[
+						$ns.var.set("diff", $ns.fn.getNRun("random", ["int", 1, 20])),
+						$ns.var.set("b", $ns.fn.getNRun("random", ["int", 1, 20])),
+						$ns.rtrn(
+							$ns.obj.new({
+								a: $ns.fn.getNRun("op", ["+", $ns.var.get("diff"), $ns.var.get("b")]),
+								b: $ns.var.get("b")
+							})
+						)
+					]
 				),
 				uiPlan: [$ns.ui.prgh([field("a"), "minus", field("b"), "equals", $ns.ui.input("answer")])],
 				solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", ["-", field("a"), field("b")]))

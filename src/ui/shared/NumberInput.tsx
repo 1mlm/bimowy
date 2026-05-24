@@ -62,10 +62,11 @@ export function NumberInput({
 			onChange={(ev) => {
 				const newValue = ev.target.value;
 				const isEmptyAndAllowed = newValue === "" && allowEmpty;
-				if (isEmptyAndAllowed || isValidNumber(newValue)) {
+				const isPendingMinus = newValue === "-";
+				if (isEmptyAndAllowed || isPendingMinus || isValidNumber(newValue)) {
 					setInsideStateValue(newValue);
 					setIsValid(true);
-					if (onNewValue) {
+					if (!isPendingMinus && onNewValue) {
 						if (allowEmpty && newValue === "") onNewValue(undefined);
 						else return onNewValue(+newValue);
 					}
