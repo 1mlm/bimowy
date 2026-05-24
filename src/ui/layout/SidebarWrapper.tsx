@@ -5,12 +5,15 @@ import {
 	ChartPieIcon,
 	CodeIcon,
 	CompassIcon,
+	LogInIcon,
+	LogOutIcon,
 	type LucideIcon,
 	RoseIcon
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
+import { signIn, signOut, useSession } from "@/auth/client";
 import {
 	Sidebar,
 	SidebarGroup,
@@ -94,9 +97,7 @@ export default function SideBarWrapper({ children }: { children: ReactNode }) {
 	return (
 		<SidebarProvider open={isOpen}>
 			<CustomSidebar />
-			<main className="w-full min-h-screen p-4">
-				{children}
-			</main>
+			<main className="w-full min-h-screen p-4">{children}</main>
 		</SidebarProvider>
 	);
 }
@@ -107,8 +108,50 @@ function CustomSidebar() {
 			<Header />
 			<MainNavButtons />
 			<div className="h-full w-full"></div>
+			<UserSection />
 			<SidebarCredits />
 		</Sidebar>
+	);
+}
+
+function UserSection() {
+	const { data: session, isPending } = useSession();
+
+	if (isPending) return null;
+
+	if (!session) {
+		return (
+			<div className="p-2">
+				<SidebarMenuButton
+					onClick={() => signIn.social({ provider: "github", callbackURL: "/" })}
+					className="w-full gap-2"
+				>
+					<LogInIcon className="size-4" />
+					<span>Sign in with GitHub</span>
+				</SidebarMenuButton>
+			</div>
+		);
+	}
+
+	return (
+		<div className="p-2 flex flex-col gap-1">
+			<div className="flex items-center gap-2 px-2 py-1">
+				{session.user.image && (
+					<Image
+						src={session.user.image}
+						alt=""
+						width={24}
+						height={24}
+						className="rounded-full size-6 shrink-0"
+					/>
+				)}
+				<span className="text-sm truncate opacity-70">{session.user.name}</span>
+			</div>
+			<SidebarMenuButton onClick={() => signOut()} className="w-full gap-2 opacity-50">
+				<LogOutIcon className="size-4" />
+				<span>Sign out</span>
+			</SidebarMenuButton>
+		</div>
 	);
 }
 

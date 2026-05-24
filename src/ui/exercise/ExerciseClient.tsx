@@ -1,10 +1,11 @@
 "use client";
 
 import { CheckCheckIcon, EyeIcon, RefreshCwIcon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
+import { toast } from "sonner";
 import { ExerciseProvider, useExerciseStore } from "@/context/ExerciseContext";
-import { Button } from "@/ui/shared/button";
 import { RootUIRenderer } from "@/ui/ns/RootUIRenderer";
+import { Button } from "@/ui/shared/button";
 
 type Props = {
 	typeHandle: string;
@@ -45,8 +46,6 @@ export function ExerciseClient({ typeHandle, handle }: Props) {
 }
 
 function ExerciseInner({ typeHandle, handle }: Props) {
-	const [error, setError] = useState<string | null>(null);
-
 	const ui = useExerciseStore((s) => s.ui);
 	const status = useExerciseStore((s) => s.status);
 	const seed = useExerciseStore((s) => s.seed);
@@ -60,12 +59,11 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 
 	const loadNewSeed = useCallback(async () => {
 		setStatus("loading");
-		setError(null);
 		try {
 			const { seed: newSeed, ui: newUi } = await fetchSeed(typeHandle, handle);
 			setSeed(newSeed, newUi);
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Failed to load exercise.");
+			toast.error(e instanceof Error ? e.message : "Failed to load exercise.");
 			setStatus("idle");
 		}
 	}, [typeHandle, handle, setSeed, setStatus]);
@@ -87,7 +85,7 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 			const allCorrect = Object.values(result).every((r) => r.is_correct);
 			setStatus(allCorrect ? "correct" : "wrong");
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Correction failed.");
+			toast.error(e instanceof Error ? e.message : "Correction failed.");
 			setStatus("idle");
 		}
 	}
@@ -105,22 +103,18 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 			setInputsAndBump(answerInputs);
 			setStatus("wrong");
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Could not retrieve answer.");
+			toast.error(e instanceof Error ? e.message : "Could not retrieve answer.");
 			setStatus("idle");
 		}
 	}
 
 	async function handleNext() {
-		const { seed: newSeed, ui: newUi } = await fetchSeed(typeHandle, handle);
-		resetForNewProblem(newSeed, newUi);
-	}
-
-	if (error) {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<p className="text-red-400 text-sm font-mono">{error}</p>
-			</div>
-		);
+		try {
+			const { seed: newSeed, ui: newUi } = await fetchSeed(typeHandle, handle);
+			resetForNewProblem(newSeed, newUi);
+		} catch (e) {
+			toast.error(e instanceof Error ? e.message : "Failed to load next problem.");
+		}
 	}
 
 	const isLoading = status === "loading";
