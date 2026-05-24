@@ -27,8 +27,12 @@ export async function POST(req: Request) {
 	if (!dbResource)
 		return NextResponse.json({ message: "Resource not found." }, { status: 404 });
 
-	const resource = toExerciseTemplateResource(dbResource);
-	const result = correct(resource, parsed.data.seed, parsed.data.inputs);
-
-	return NextResponse.json({ result });
+	try {
+		const resource = toExerciseTemplateResource(dbResource);
+		const result = correct(resource, parsed.data.seed, parsed.data.inputs);
+		return NextResponse.json({ result });
+	} catch (e) {
+		const msg = e instanceof Error ? e.message : String(e);
+		return NextResponse.json({ message: msg }, { status: 500 });
+	}
 }
