@@ -89,11 +89,12 @@ export const basicComparisonFunction = $({
 	id: "compare",
 	inputs: z.tuple([
 		z.enum(Object.keys(basicComparisonExecuters) as [string, ...string[]]),
-		z.number(),
-		z.number()
+		z.unknown(),
+		z.unknown()
 	]),
 	output: z.boolean(),
 	execute: (op, a, b) => {
+		if (typeof a !== "number" || typeof b !== "number") return false;
 		assertIsComparisonOperator(op);
 		return basicComparisonExecuters[op](a, b);
 	}
