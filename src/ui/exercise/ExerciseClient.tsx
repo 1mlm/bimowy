@@ -117,11 +117,13 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 	}
 
 	async function handleNext() {
+		setStatus("loading");
 		try {
 			const { seed: newSeed, ui: newUi } = await fetchSeed(typeHandle, handle);
 			resetForNewProblem(newSeed, newUi, status === "correct");
 		} catch (e) {
 			toast.error(e instanceof Error ? e.message : "Failed to load next problem.");
+			setStatus("correct");
 		}
 	}
 
