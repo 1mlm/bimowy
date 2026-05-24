@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { type ReactNode, useState } from "react";
 import { signIn, signOut, useSession } from "@/auth/client";
 import {
@@ -180,15 +181,17 @@ function Header() {
 }
 
 function MainNavButtons() {
+	const pathname = usePathname();
 	return data.nav.map((n) => (
 		<SidebarGroup key={n.id}>
 			{n.name && <SidebarGroupLabel>{n.name}</SidebarGroupLabel>}
 			<SidebarGroupContent>
 				<SidebarMenu>
 					{n.items.map((item) => {
+						const isActive = !item.disabled && pathname.startsWith(item.href === "/" ? "/browse" : item.href);
 						return (
 							<SidebarMenuItem key={item.id}>
-								<SidebarMenuButton asChild disabled={item.disabled} aria-disabled={item.disabled}>
+								<SidebarMenuButton asChild disabled={item.disabled} aria-disabled={item.disabled} isActive={isActive}>
 									<Link
 										href={item.disabled ? "/" : item.href}
 										aria-disabled={item.disabled}
