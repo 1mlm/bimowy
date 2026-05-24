@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCheckIcon, EyeIcon, RefreshCwIcon } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { ExerciseProvider, useExerciseStore } from "@/context/ExerciseContext";
 import { RootUIRenderer } from "@/ui/ns/RootUIRenderer";
@@ -71,6 +71,14 @@ function ExerciseInner({ typeHandle, handle }: Props) {
 	useEffect(() => {
 		loadNewSeed();
 	}, [loadNewSeed]);
+
+	const actionRef = useRef<() => void>(() => {});
+	actionRef.current = status === "correct" ? handleNext : status !== "loading" ? handleSubmit : () => {};
+	useEffect(() => {
+		const onKey = (e: KeyboardEvent) => { if (e.key === "Enter") actionRef.current(); };
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, []);
 
 	async function handleSubmit() {
 		if (status === "loading" || status === "correct") return;
