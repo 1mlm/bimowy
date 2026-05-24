@@ -129,6 +129,18 @@ export const otherFunctions = [
 		inputs: z.tuple([z.number(), z.number()]),
 		output: z.number(),
 		execute: (a, b) => a % b
+	}),
+	$({
+		id: "max",
+		inputs: z.tuple([z.number(), z.number()]),
+		output: z.number(),
+		execute: (a, b) => Math.max(a, b)
+	}),
+	$({
+		id: "min",
+		inputs: z.tuple([z.number(), z.number()]),
+		output: z.number(),
+		execute: (a, b) => Math.min(a, b)
 	})
 ] as const;
 

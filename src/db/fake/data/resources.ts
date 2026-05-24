@@ -201,18 +201,159 @@ export const FAKE_RESOURCES: FakeResource[] = [
 						$ns.obj.new({ value: field("b") })
 					])
 				],
-				// correctionPlan: answer === max(a, b)
-				correctionPlan: $ns.fn.newNReturn(
-					$ns.fn.getNRun("compare", [
-						"=",
-						answer,
-						$ns.cond(
-							$ns.fn.getNRun("compare", [">", field("a"), field("b")]),
-							field("a"),
-							field("b")
-						)
+				// Return { answer: { is_correct, value } } so UIRenderer can highlight correct option
+				correctionPlan: $ns.fn.new([], [
+					$ns.var.set("_max", $ns.fn.getNRun("max", [field("a"), field("b")])),
+					$ns.rtrn(
+						$ns.obj.new({
+							answer: $ns.obj.new({
+								is_correct: $ns.fn.getNRun("compare", ["=", answer, $ns.var.get("_max")]),
+								value: $ns.var.get("_max")
+							})
+						})
+					)
+				])
+			})
+		)
+	},
+	{
+		handle: "even-or-odd",
+		title: "Even or Odd",
+		aliases: ["even", "odd", "parity"],
+		desc: "Decide whether a number is even or odd.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "arithmetic" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { n: 14 },
+				exampleAnswer: 0,
+				seedGeneratorPlan: $ns.fn.newNReturn(
+					$ns.obj.new({ n: $ns.fn.getNRun("random", ["int", 2, 99]) })
+				),
+				uiPlan: [
+					$ns.ui.prgh(["Is", field("n"), "even or odd?"]),
+					$ns.ui.choice("answer", [
+						$ns.obj.new({ label: "Even", value: 0 }),
+						$ns.obj.new({ label: "Odd", value: 1 })
 					])
+				],
+				// Return { answer: { is_correct, value } } so correct option highlights
+				correctionPlan: $ns.fn.new([], [
+					$ns.var.set("_parity", $ns.fn.getNRun("mod", [field("n"), 2])),
+					$ns.rtrn(
+						$ns.obj.new({
+							answer: $ns.obj.new({
+								is_correct: $ns.fn.getNRun("compare", ["=", answer, $ns.var.get("_parity")]),
+								value: $ns.var.get("_parity")
+							})
+						})
+					)
+				])
+			})
+		)
+	},
+	{
+		handle: "area-rectangle",
+		title: "Rectangle Area",
+		aliases: ["rectangle", "area", "width", "height"],
+		desc: "Calculate the area of a rectangle.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "geometry" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { w: 5, h: 3 },
+				exampleAnswer: 15,
+				seedGeneratorPlan: $ns.fn.newNReturn(
+					$ns.obj.new({
+						w: $ns.fn.getNRun("random", ["int", 2, 15]),
+						h: $ns.fn.getNRun("random", ["int", 2, 15])
+					})
+				),
+				uiPlan: [
+					$ns.ui.prgh([
+						"A rectangle with width",
+						field("w"),
+						"and height",
+						field("h"),
+						"has area",
+						$ns.ui.input("answer")
+					])
+				],
+				solutionPlan: $ns.fn.newNReturn($ns.fn.getNRun("op", ["*", field("w"), field("h")]))
+			})
+		)
+	},
+	{
+		handle: "percentage",
+		title: "Percentage",
+		aliases: ["percentage", "percent", "%"],
+		desc: "Find a percentage of a number.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "arithmetic" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { pct: 20, base: 50 },
+				exampleAnswer: 10,
+				// pct = multiple of 10 (10–90), base = multiple of 10 (20–100) → integer answer
+				seedGeneratorPlan: $ns.fn.newNReturn(
+					$ns.obj.new({
+						pct: $ns.fn.getNRun("op", ["*", $ns.fn.getNRun("random", ["int", 1, 9]), 10]),
+						base: $ns.fn.getNRun("op", ["*", $ns.fn.getNRun("random", ["int", 2, 10]), 10])
+					})
+				),
+				uiPlan: [
+					$ns.ui.prgh([
+						"What is",
+						field("pct"),
+						"% of",
+						field("base"),
+						"?",
+						$ns.ui.input("answer")
+					])
+				],
+				solutionPlan: $ns.fn.newNReturn(
+					$ns.fn.getNRun("op", ["/", $ns.fn.getNRun("op", ["*", field("pct"), field("base")]), 100])
 				)
+			})
+		)
+	},
+	{
+		handle: "missing-addend",
+		title: "Missing Addend",
+		aliases: ["missing", "addend", "unknown"],
+		desc: "Find the missing number in an addition equation.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "arithmetic" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { a: 5, b: 8, c: 13 },
+				exampleAnswer: 5,
+				// a is the hidden addend; c = a + b
+				seedGeneratorPlan: $ns.fn.new([], [
+					$ns.var.set("a", $ns.fn.getNRun("random", ["int", 1, 20])),
+					$ns.var.set("b", $ns.fn.getNRun("random", ["int", 1, 20])),
+					$ns.rtrn(
+						$ns.obj.new({
+							a: $ns.var.get("a"),
+							b: $ns.var.get("b"),
+							c: $ns.fn.getNRun("op", ["+", $ns.var.get("a"), $ns.var.get("b")])
+						})
+					)
+				]),
+				uiPlan: [
+					$ns.ui.prgh([
+						$ns.ui.input("answer"),
+						"+",
+						field("b"),
+						"=",
+						field("c")
+					])
+				],
+				solutionPlan: $ns.fn.newNReturn(field("a"))
 			})
 		)
 	}
