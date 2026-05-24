@@ -10,6 +10,7 @@ import { NSReturnNodeData } from "./nodes/code/return";
 import { NSVarGetNodeData } from "./nodes/code/var-get";
 import { NSVarSetNodeData } from "./nodes/code/var-set";
 import { NSUIInputNodeData } from "./nodes/ui/input";
+import { NSUIInputChoiceNodeData } from "./nodes/ui/input-choice";
 import { NSUIParagraphNodeData } from "./nodes/ui/paragraph";
 import { NSUITextNodeData } from "./nodes/ui/text";
 import { NSUIWidgetNodeData } from "./nodes/ui/widget";
@@ -30,6 +31,7 @@ export const NSComplexNodeIDSchema = z.enum([
 	"ui-widget",
 	"ui-prgh",
 	"ui-input",
+	"ui-input-choice",
 	"ui-text"
 ]);
 export type NSNodeID = z.infer<typeof NSComplexNodeIDSchema>;
@@ -53,6 +55,7 @@ export const NSComplexCodeNodesData = [
 	NSFunctionRunNodeData,
 	NSObjectNodeData,
 	NSUIInputNodeData,
+	NSUIInputChoiceNodeData,
 	NSUITextNodeData,
 	NSUIParagraphNodeData,
 	NSUIWidgetNodeData

@@ -105,8 +105,31 @@ export const otherFunctions = [
 		inputs: z.array(z.union([z.string(), z.number()])),
 		output: z.string(),
 		execute: (...strs) => strs.map((str) => `${str}`.trim()).join(" ")
+	}),
+	$({
+		id: "round",
+		inputs: z.tuple([z.number()]),
+		output: z.number(),
+		execute: (n) => Math.round(n)
+	}),
+	$({
+		id: "floor",
+		inputs: z.tuple([z.number()]),
+		output: z.number(),
+		execute: (n) => Math.floor(n)
+	}),
+	$({
+		id: "abs",
+		inputs: z.tuple([z.number()]),
+		output: z.number(),
+		execute: (n) => Math.abs(n)
+	}),
+	$({
+		id: "mod",
+		inputs: z.tuple([z.number(), z.number()]),
+		output: z.number(),
+		execute: (a, b) => a % b
 	})
-	// ...
 ] as const;
 
 export const basicFunctionRegistry = [

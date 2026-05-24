@@ -8,6 +8,7 @@ import type { NSReturnNode } from "../nodes/code/return";
 import type { NSVarGetNode } from "../nodes/code/var-get";
 import type { NSVarSetNode } from "../nodes/code/var-set";
 import type { NSUIInputNode } from "../nodes/ui/input";
+import type { NSUIInputChoiceNode } from "../nodes/ui/input-choice";
 import type { NSUIParagraphNode } from "../nodes/ui/paragraph";
 import type { NSUITextNode } from "../nodes/ui/text";
 import type { NSUIWidgetNode } from "../nodes/ui/widget";
@@ -47,6 +48,11 @@ const cond = (condition: NSNode, yes: NSNode, no: NSNode): NSIfNode => ({
 	uiInput = (id: NSNode): NSUIInputNode => ({
 		_nstype: "ui-input",
 		id
+	}),
+	uiInputChoice = (id: NSNode, options: NSNode): NSUIInputChoiceNode => ({
+		_nstype: "ui-input-choice",
+		id,
+		options
 	}),
 	uiText = (text: NSNode): NSUITextNode => ({
 		_nstype: "ui-text",
@@ -92,6 +98,7 @@ export const $ns = {
 	},
 	ui: {
 		input: uiInput,
+		choice: uiInputChoice,
 		text: uiText,
 		prgh: uiParagraph,
 		widget: uiWidget

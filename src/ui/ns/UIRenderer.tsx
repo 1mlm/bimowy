@@ -5,6 +5,8 @@ import { useExerciseStore } from "@/context/ExerciseContext";
 import { NumberInput } from "@/ui/shared/NumberInput";
 import { type WidgetId, WidgetsRegistry } from "@/ui/widgets";
 
+type ChoiceOption = { label?: string; value: unknown };
+
 function isUIInput(node: unknown): node is { _nstype: "ui-input"; id: string } {
 	return (
 		typeof node === "object" &&
@@ -12,6 +14,14 @@ function isUIInput(node: unknown): node is { _nstype: "ui-input"; id: string } {
 		(node as Record<string, unknown>)._nstype === "ui-input" &&
 		typeof (node as Record<string, unknown>).id === "string"
 	);
+}
+
+function isUIInputChoice(
+	node: unknown
+): node is { _nstype: "ui-input-choice"; id: string; options: ChoiceOption[] } {
+	if (typeof node !== "object" || node === null) return false;
+	const obj = node as Record<string, unknown>;
+	return obj._nstype === "ui-input-choice" && typeof obj.id === "string" && Array.isArray(obj.options);
 }
 
 function isWidget(node: unknown): node is { id: WidgetId; args: unknown } {
@@ -30,12 +40,13 @@ function UIInputNode({ id }: { id: string }) {
 	const inputCorrection = correction?.[id];
 	const isWrong = status === "wrong" && inputCorrection && !inputCorrection.is_correct;
 	const isCorrect = status === "correct";
+	const numValue = typeof value === "number" ? value : undefined;
 
 	return (
 		<NumberInput
 			key={`${id}-${inputGeneration}`}
 			allowEmpty
-			defaultValue={value}
+			defaultValue={numValue}
 			disabled={isCorrect}
 			onNewValue={(v) => setInput(id, v)}
 			className={
@@ -46,6 +57,46 @@ function UIInputNode({ id }: { id: string }) {
 						: ""
 			}
 		/>
+	);
+}
+
+function UIInputChoiceNode({ id, options }: { id: string; options: ChoiceOption[] }) {
+	const value = useExerciseStore((s) => s.inputs[id]);
+	const inputGeneration = useExerciseStore((s) => s.inputGeneration);
+	const correction = useExerciseStore((s) => s.correction);
+	const status = useExerciseStore((s) => s.status);
+	const setInput = useExerciseStore((s) => s.setInput);
+
+	const inputCorrection = correction?.[id];
+	const isCorrect = status === "correct";
+	const isSubmitted = status === "wrong" || status === "correct";
+
+	return (
+		<div key={`${id}-${inputGeneration}`} className="grid grid-cols-2 gap-2 w-full max-w-sm">
+			{options.map((opt) => {
+				const selected = value === opt.value;
+				const optCorrect = isSubmitted && inputCorrection && opt.value === inputCorrection.value;
+				const optWrong = isSubmitted && selected && inputCorrection && !inputCorrection.is_correct;
+
+				return (
+					<button
+						key={String(opt.value)}
+						type="button"
+						disabled={isCorrect}
+						onClick={() => setInput(id, opt.value)}
+						className={[
+							"rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-100",
+							selected && !isSubmitted ? "border-white/40 bg-white/10" : "",
+							optCorrect ? "border-green-500/60 bg-green-500/10 text-green-400" : "",
+							optWrong ? "border-red-500/60 bg-red-500/10 text-red-400" : "",
+							!selected && !optCorrect ? "border-white/10 bg-white/5 opacity-60 hover:opacity-100 hover:border-white/20" : ""
+						].join(" ")}
+					>
+						{opt.label ?? String(opt.value)}
+					</button>
+				);
+			})}
+		</div>
 	);
 }
 
@@ -78,13 +129,9 @@ export function UIRenderer({ node }: { node: unknown }) {
 		);
 	}
 
-	if (isUIInput(node)) {
-		return <UIInputNode id={node.id} />;
-	}
-
-	if (isWidget(node)) {
-		return <WidgetNode id={node.id} args={node.args} />;
-	}
+	if (isUIInput(node)) return <UIInputNode id={node.id} />;
+	if (isUIInputChoice(node)) return <UIInputChoiceNode id={node.id} options={node.options} />;
+	if (isWidget(node)) return <WidgetNode id={node.id} args={node.args} />;
 
 	return null;
 }

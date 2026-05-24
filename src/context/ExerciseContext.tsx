@@ -9,14 +9,14 @@ export type ExerciseStatus = "idle" | "loading" | "submitted" | "correct" | "wro
 type ExerciseStore = {
 	seed: unknown;
 	ui: unknown[];
-	inputs: Record<string, number | undefined>;
+	inputs: Record<string, unknown>;
 	inputGeneration: number;
 	status: ExerciseStatus;
 	correction: CorrectionResult | null;
 	globalVars: Record<string, unknown>;
 	setSeed: (seed: unknown, ui: unknown[]) => void;
-	setInput: (id: string, value: number | undefined) => void;
-	setInputsAndBump: (inputs: Record<string, number | undefined>) => void;
+	setInput: (id: string, value: unknown) => void;
+	setInputsAndBump: (inputs: Record<string, unknown>) => void;
 	setGlobalVar: (id: string, value: unknown) => void;
 	setStatus: (status: ExerciseStatus) => void;
 	setCorrection: (correction: CorrectionResult | null) => void;
