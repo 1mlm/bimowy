@@ -142,6 +142,35 @@ export const otherFunctions = [
 		inputs: z.tuple([z.number(), z.number()]),
 		output: z.number(),
 		execute: (a, b) => Math.min(a, b)
+	}),
+	$({
+		id: "ceil",
+		inputs: z.tuple([z.number()]),
+		output: z.number(),
+		execute: (n) => Math.ceil(n)
+	}),
+	$({
+		id: "isprime",
+		inputs: z.tuple([z.number()]),
+		output: z.boolean(),
+		execute: (n) => {
+			if (n < 2) return false;
+			for (let i = 2; i <= Math.sqrt(n); i++) {
+				if (n % i === 0) return false;
+			}
+			return true;
+		}
+	}),
+	$({
+		id: "gcd",
+		inputs: z.tuple([z.number(), z.number()]),
+		output: z.number(),
+		execute: (a, b) => {
+			let x = Math.abs(a);
+			let y = Math.abs(b);
+			while (y) { const t = y; y = x % y; x = t; }
+			return x;
+		}
 	})
 ] as const;
 

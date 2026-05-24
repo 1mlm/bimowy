@@ -262,6 +262,82 @@ export const FAKE_RESOURCES: FakeResource[] = [
 		)
 	},
 	{
+		handle: "number-bonds",
+		title: "Number Bonds",
+		aliases: ["number-bonds", "bonds", "pairs", "make ten"],
+		desc: "Find the missing number that completes the pair.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "arithmetic" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { target: 10, a: 3 },
+				exampleAnswer: 7,
+				seedGeneratorPlan: $ns.fn.new(
+					[],
+					[
+						$ns.var.set(
+							"target",
+							$ns.fn.getNRun("op", ["*", $ns.fn.getNRun("random", ["int", 1, 2]), 10])
+						),
+						$ns.rtrn(
+							$ns.obj.new({
+								target: $ns.var.get("target"),
+								a: $ns.fn.getNRun("random", ["int", 1, $ns.fn.getNRun("op", ["-", $ns.var.get("target"), 1])])
+							})
+						)
+					]
+				),
+				uiPlan: [
+					$ns.ui.prgh([field("a"), "+", $ns.ui.input("answer"), "=", field("target")])
+				],
+				solutionPlan: $ns.fn.newNReturn(
+					$ns.fn.getNRun("op", ["-", field("target"), field("a")])
+				)
+			})
+		)
+	},
+	{
+		handle: "prime-check",
+		title: "Prime or Composite",
+		aliases: ["prime", "composite", "prime-check", "is prime"],
+		desc: "Decide whether a number is prime or composite.",
+		beta: true,
+		tags: { connect: [{ handle: "math" }, { handle: "arithmetic" }] },
+		type: "TEMPLATE_EXERCISE",
+		data: JSON.parse(
+			JSON.stringify({
+				exampleSeed: { n: 7 },
+				exampleAnswer: 1,
+				seedGeneratorPlan: $ns.fn.newNReturn(
+					$ns.obj.new({ n: $ns.fn.getNRun("random", ["int", 2, 30]) })
+				),
+				uiPlan: [
+					$ns.ui.prgh(["Is", field("n"), "prime or composite?"]),
+					$ns.ui.choice("answer", [
+						$ns.obj.new({ label: "Prime", value: 1 }),
+						$ns.obj.new({ label: "Composite", value: 0 })
+					])
+				],
+				correctionPlan: $ns.fn.new(
+					[],
+					[
+						$ns.var.set("_p", $ns.fn.getNRun("isprime", [field("n")])),
+						$ns.var.set("_v", $ns.cond($ns.var.get("_p"), 1, 0)),
+						$ns.rtrn(
+							$ns.obj.new({
+								answer: $ns.obj.new({
+									is_correct: $ns.fn.getNRun("compare", ["=", answer, $ns.var.get("_v")]),
+									value: $ns.var.get("_v")
+								})
+							})
+						)
+					]
+				)
+			})
+		)
+	},
+	{
 		handle: "area-rectangle",
 		title: "Rectangle Area",
 		aliases: ["rectangle", "area", "width", "height"],
