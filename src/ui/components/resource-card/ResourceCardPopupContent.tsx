@@ -2,7 +2,7 @@ import { ArrowRightIcon, PlayIcon } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
 import type { FetchedResource } from "@/db/util";
-import { RESOURCE_TYPES_MAP, UNKNOWN_RESOURCE_TYPE } from "@/ui/constants/resource-types";
+import { RESOURCE_TYPES_MAP, UNKNOWN_RESOURCE_TYPE } from "@/ui/config/resource-types";
 import { useIsFocused } from "@/ui/hooks/useIsFocused";
 import { DialogContent, DialogDescription, DialogFooter, DialogTitle } from "@/ui/shadcn/ui/dialog";
 import { Button } from "@/ui/shared/button";

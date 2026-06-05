@@ -1,5 +1,5 @@
 import { fetchResources } from "@/db/util";
-import { ResourceCard } from "@/ui/cpn/resource-card/ResourceCard";
+import { ResourceCard } from "@/ui/components/resource-card/ResourceCard";
 import { MetaPage } from "@/ui/templates/MetaPage";
 
 export default async function BrowsePage() {

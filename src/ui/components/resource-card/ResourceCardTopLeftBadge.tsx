@@ -1,6 +1,6 @@
 import type { FetchedResource } from "@/db/util";
-import { RESOURCE_TYPES_MAP, UNKNOWN_RESOURCE_TYPE } from "@/ui/constants/resource-types";
-import { formatToPascalCase } from "@/utils/format";
+import { RESOURCE_TYPES_MAP, UNKNOWN_RESOURCE_TYPE } from "@/ui/config/resource-types";
+import { formatToPascalCase } from "@/ui/utils/format";
 
 // TODO: polish
 export function ResourceCardTopLeftBadge({

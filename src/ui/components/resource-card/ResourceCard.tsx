@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import type { FetchedResource } from "@/db/util";
 import { useIsFocused } from "@/ui/hooks/useIsFocused";
-import { RESOURCE_TYPES_MAP, UNKNOWN_RESOURCE_TYPE } from "../../constants/resource-types";
+import { RESOURCE_TYPES_MAP, UNKNOWN_RESOURCE_TYPE } from "../../config/resource-types";
 import { ResourceCardPopupProvider } from "./ResourceCardPopupProvider";
 import { ResourceCardTag } from "./ResourceCardTag";
 import { ResourceCardTopLeftBadge } from "./ResourceCardTopLeftBadge";

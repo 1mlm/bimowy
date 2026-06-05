@@ -1,5 +1,5 @@
 import type { FetchedResource } from "@/db/util";
-import { TAGS_ICON_MAP } from "@/ui/constants/tags";
+import { TAGS_ICON_MAP } from "@/ui/config/tags";
 
 
 export function ResourceCardTag(tag: FetchedResource["tags"][number]) {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Google_Sans_Code, Outfit } from "next/font/google";
 import type { PropsWithChildren } from "react";
-import "@/ui/style.css";
+import "@/ui/css/main.css";
 import SideBarWrapper from "@/ui/layout/SidebarWrapper";
 
 const mainFont = Outfit();

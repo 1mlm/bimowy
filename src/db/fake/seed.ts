@@ -1,5 +1,5 @@
 import { prisma } from "@/db/client";
-import { echo } from "@/utils/echo";
+import { echo } from "@/dev/echo";
 import { FAKE_RESOURCES } from "./data/resources";
 import { FAKE_TAGS } from "./data/tags";
 
