@@ -5,8 +5,7 @@ import {
 	ChartPieIcon,
 	CodeIcon,
 	CompassIcon,
-	type LucideIcon,
-	RoseIcon
+	type LucideIcon
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,6 +21,7 @@ import {
 	SidebarMenuItem,
 	SidebarProvider
 } from "@/ui/shadcn/ui/sidebar";
+import { PROJECT_ICON } from "../config/branding";
 
 type NavGroup = {
 	name: string;
@@ -48,7 +48,7 @@ type SidebarData = {
 export const data: SidebarData = {
 	main: {
 		href: "/",
-		icon: RoseIcon,
+		icon: PROJECT_ICON,
 		title: "PluriHub",
 		subtitle: "Learning, but fun ig"
 	},
@@ -120,10 +120,10 @@ function Header() {
 					<SidebarMenuButton asChild size="lg">
 						<a href={data.main.href} className="flex gap-3">
 							<div className="aspect-square h-full flex justify-center items-center">
-								<data.main.icon className="hover:scale-105 hover:rotate-5 duration-150 size-full p-0.5" />
+								<data.main.icon className="hover:scale-105 hover:rotate-5 duration-150 size-full" />
 							</div>
-							<div className="flex flex-col leading-none">
-								<span className="font-medium text-xl">{data.main.title}</span>
+							<div className="flex flex-col">
+								<span className="font-medium text-xl leading-6">{data.main.title}</span>
 								{data.main.subtitle && (
 									<span className="text-md opacity-50">{data.main.subtitle}</span>
 								)}
