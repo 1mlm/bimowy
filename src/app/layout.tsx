@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Google_Sans_Code, Outfit } from "next/font/google";
 import type { PropsWithChildren } from "react";
 import "@/ui/css/main.css";
 import SideBarWrapper from "@/ui/layout/SidebarWrapper";
-
-const mainFont = Outfit();
-const monoFont = Google_Sans_Code({ variable: "--font-mono" });
+import { mainFont } from "@/ui/fonts";
 
 export const metadata: Metadata = {
 	description: "Learning but it's actually fun",
@@ -15,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en">
-			<body className={`${mainFont.className} ${monoFont.variable}`}>
+			<body className={mainFont.className}>
 				<SideBarWrapper>
 					{children}
 				</SideBarWrapper>
