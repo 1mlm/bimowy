@@ -1,3 +1,7 @@
+This chat was exported using a js script i told claude to make. Most of my texts are local audio retranscriptions hence the extremely bad grammar and lack of points & commas
+
+--------------------------------------------------------------------------------
+
 **Malik:**
 
 hey claws I have something to talk to you about with PluriHub from your memory the first I wanted to list out some political issues I want you to list out some things that we just can't end up fixing in the world right I'm not talking about specific niche issues I'm talking about for example the fact that politicians keep not being honest right because it's not in the best interest you can also talk about how people when there is a big drama going on or a controversy they aren't "mad enough"and so they don't do anything exactly you would exchange is doing like some things that you can only blame on the human physiology or psychology they can't really fix you know can you list some of these I don't know I'll tell you I don't want you to tell me with my projects with what I plan on doing or actually don't do it I will do it myself with my projects how I will be able to solve all with no exception be as wild as you want to be
