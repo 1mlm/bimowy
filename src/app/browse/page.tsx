@@ -10,7 +10,7 @@ export default async function BrowsePage() {
 	return (
 		<div className="flex flex-wrap gap-4">
 			{resources.map((r) => (
-				<ResourceCard key={r.id} {...r} />
+				<ResourceCard key={r.handle} {...r} />
 			))}
 		</div>
 	);
