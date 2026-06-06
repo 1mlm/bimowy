@@ -8,25 +8,21 @@ datasource db {
 }
 
 model Resource {
-  id String @id @default(uuid())
+  handle String @id @unique
 
-  type    ResourceType
-  handle  String
-  
   title   String
   aliases String[]
-  beta    Boolean      @default(true)
   desc    String?
-  tags    Tag[]
+  beta    Boolean  @default(true)
+
+  tags       Tag[]
+  type       ResourceType
+  visibility ResourceStatus @default(PUBLIC)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  visibility ResourceStatus @default(PUBLIC)
-
   data Json
-
-  @@unique([handle, type])
 }
 
 enum ResourceType {

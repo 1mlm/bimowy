@@ -10,9 +10,16 @@ export async function fetchResources() {
 	});
 }
 
-export async function fetchResource(type: ResourceType, handle: string) {
-	return prisma.resource.findUnique({
-		where: { handle_type: { type, handle } },
+export async function fetchResource(type: ResourceType, id: string) {
+	return prisma.resource.findFirst({
+		where: { handle: id, type },
+		include: { tags: true }
+	});
+}
+
+export async function fetchResourceById(id: string) {
+	return prisma.resource.findFirst({
+		where: { handle: id },
 		include: { tags: true }
 	});
 }
