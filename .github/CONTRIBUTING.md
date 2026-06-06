@@ -12,6 +12,7 @@ If you wish to play around with all the back-end code (especially the node syste
 - `🎨 ui:` = UI/UX design improvement
 - `✏️ doc:` = Documentation/
 - `⚙️ config:` = .gitignore, .tsconfig, config.json, biome.json etc..
+- `📝 doc:` = Modified documentation, .md files or comments
 
 # General
 ### For when there is no specific emoji to use
